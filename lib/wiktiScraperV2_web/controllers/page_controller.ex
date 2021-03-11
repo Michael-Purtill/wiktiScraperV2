@@ -1,0 +1,7 @@
+defmodule WiktiScraperV2Web.PageController do
+  use WiktiScraperV2Web, :controller
+
+  def index(conn, _params) do
+    render(conn, "index.html")
+  end
+end
