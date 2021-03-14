@@ -46,7 +46,8 @@ defmodule WiktiScraperV2.MixProject do
       {:jason, "~> 1.0"},
       {:plug_cowboy, "~> 2.0"},
       {:floki, "~> 0.30.0"},
-      {:html5ever, "~> 0.8.0"}
+      {:html5ever, "~> 0.8.0"},
+      {:httpoison, "~> 1.8"}
     ]
   end
 
