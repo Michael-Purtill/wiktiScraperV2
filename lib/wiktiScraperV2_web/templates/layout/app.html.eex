@@ -10,6 +10,8 @@
   </head>
   <body>
 
+  <header id="header">WiktiScraper</header>
+
     <main role="main" class="container">
       <%= @inner_content %>
     </main>

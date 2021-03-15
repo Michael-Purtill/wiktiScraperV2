@@ -19,10 +19,10 @@ defmodule WiktiScraperV2Web.Router do
     get "/", PageController, :index
   end
 
-  scope "/api/", WiktiScraperV2Web do
+  scope "/api", WiktiScraperV2Web do
     pipe_through :api
 
-    get "/", PageController, :index
+    get "/langlist", ApiController, :langlist
   end
 
   # Other scopes may use custom stacks.
