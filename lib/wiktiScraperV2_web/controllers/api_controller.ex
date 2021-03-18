@@ -27,4 +27,8 @@ defmodule WiktiScraperV2Web.ApiController do
 
     json(conn, %{langs: langs})
   end
+
+  defp lang_2_lemma_link(lang) do
+    "https://en.wiktionary.org/wiki/Category:" <> lang <> "_lemmas"
+  end
 end
