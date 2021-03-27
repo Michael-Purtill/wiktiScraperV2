@@ -15,6 +15,11 @@ import "../css/app.scss";
 import "phoenix_html";
 
 import App from "./components/App.svelte";
+import Lang from "./components/Lang.svelte";
+
 
 var target = document.querySelector("#app");
 new App({ target, props: {} });
+
+var target = document.querySelector("#lang");
+new Lang({ target, props: {} });

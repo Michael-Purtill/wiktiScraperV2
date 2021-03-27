@@ -8,7 +8,7 @@
         fetch("/api/langlist").then((r) => {return r.json()}).then((d) => {langList = _.filter(d.langs, (l) => l != "") })
     })
         
-    </script>
+</script>
     
     <div>
         <h3>Please Select a Language</h3>

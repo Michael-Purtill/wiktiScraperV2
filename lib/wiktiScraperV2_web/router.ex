@@ -17,6 +17,7 @@ defmodule WiktiScraperV2Web.Router do
     pipe_through :browser
 
     get "/", PageController, :index
+    get "/:lang", PageController, :lang
   end
 
   scope "/api", WiktiScraperV2Web do
