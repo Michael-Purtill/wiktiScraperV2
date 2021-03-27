@@ -47,7 +47,7 @@ defmodule WiktiScraperV2Web.ApiController do
         end
 
         #return
-        Enum.map(a, build_pos_list)
+        Enum.map(lis, build_pos_list)
 
         {:ok, %HTTPoison.Response{status_code: 404}} ->
           IO.puts "Error trying to fetch pos list html"
