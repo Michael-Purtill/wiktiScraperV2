@@ -37,13 +37,13 @@ defmodule WiktiScraperV2Web.ApiController do
     partsOfSpeech = case HTTPoison.get(link) do
       {:ok, %HTTPoison.Response{status_code: 200, body: body}} ->
         {:ok, document} = Floki.parse_document(body)
-        ul = Floki.find(document, "ul")
-        table = Enum.at(ul, 0)
-        lis = Floki.find(tbody, "li")
+        uls = Floki.find(document, "ul")
+        ul = Enum.at(uls, 0)
+        lis = Floki.find(ul, "li")
 
         build_pos_list = fn li ->
           a = Floki.find(li, "a")
-          Floki.attribute("href", Enum.at(a, 1)) #I think Floki.find always returns a array even if only 1 element is found, so need Enum.at
+          "https://en.wiktionary.org" <> Enum.at(Floki.attribute(Enum.at(a, 0), "href"), 0) #I think Floki.find always returns a array even if only 1 element is found, so need Enum.at
         end
 
         #return
@@ -55,6 +55,13 @@ defmodule WiktiScraperV2Web.ApiController do
           IO.puts "Error trying to fetch pos list html"
     end
 
-    partOfSpeech
+    #return
+    partsOfSpeech
+  end
+
+  def getPOSLinks(conn, %{"lang" => lang}) do
+    lemmaLink = lang_2_lemma_link(lang)
+
+    json(conn, %{POSLinks: lemma_link_2_pos_links(lemmaLink)})
   end
 end

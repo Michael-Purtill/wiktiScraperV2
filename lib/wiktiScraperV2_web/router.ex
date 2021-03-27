@@ -23,6 +23,7 @@ defmodule WiktiScraperV2Web.Router do
     pipe_through :api
 
     get "/langlist", ApiController, :langlist
+    get "/posLinks/:lang", ApiController, :getPOSLinks
   end
 
   # Other scopes may use custom stacks.
