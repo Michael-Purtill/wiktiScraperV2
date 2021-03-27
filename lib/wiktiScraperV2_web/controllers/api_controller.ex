@@ -50,9 +50,11 @@ defmodule WiktiScraperV2Web.ApiController do
         Enum.map(a, build_pos_list)
 
         {:ok, %HTTPoison.Response{status_code: 404}} ->
-          IO.puts "Error trying to fetch language list html"
+          IO.puts "Error trying to fetch pos list html"
         {:error, %HTTPoison.Error{reason: _reason}} ->
-          IO.puts "Error trying to fetch language list html"
+          IO.puts "Error trying to fetch pos list html"
     end
+
+    partOfSpeech
   end
 end
