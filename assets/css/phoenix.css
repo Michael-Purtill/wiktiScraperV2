@@ -9,3 +9,7 @@ body {
 #header {
   color: black;
 }
+
+#innerApp {
+  text-align: center;
+}

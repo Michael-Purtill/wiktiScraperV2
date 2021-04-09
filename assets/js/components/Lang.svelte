@@ -12,5 +12,9 @@
 </script>
 
 <div>
-
+    {#each posLinks as link}
+        <div>
+            <h4>{link.split("Category:")[1].replaceAll("_", " ")}</h4>
+        </div>
+    {/each}
 </div>
