@@ -61,11 +61,10 @@ defmodule WiktiScraperV2Web.ApiController do
 
   def getPOSLinks(conn, %{"lang" => lang}) do
     lemmaLink = lang_2_lemma_link(lang)
-
     json(conn, %{POSLinks: lemma_link_2_pos_links(lemmaLink)})
   end
 
-  defp page2section(pageLink, lang) do
+  defp page2Section(pageLink, lang) do
     page = case HTTPoison.get(pageLink) do
       {:ok, %HTTPoison.Response{status_code: 200, body: body}} ->
         {:ok, document} = Floki.parse_document(body)
@@ -96,13 +95,41 @@ defmodule WiktiScraperV2Web.ApiController do
 
         sectionHtml = Enum.join(sectionArray, "")
 
-        IO.puts sectionHtml
-        sectionHtml
+        "<div>" <> sectionHtml <> "</div>"
 
         {:ok, %HTTPoison.Response{status_code: 404}} ->
           IO.puts "Error trying to fetch page html"
         {:error, %HTTPoison.Error{reason: _reason}} ->
           IO.puts "Error trying to fetch page html"
     end
+    #return
+    page
+  end
+
+  defp section2Content(section) do
+    {:ok, document} = Floki.parse_fragment(section)
+    getWikiHeaders(document)
+  end
+
+  defp getWikiHeaders(document) do
+    pageContent = Floki.children(Enum.at(Floki.find(document, "div"), 0))
+
+    headerChunks = Enum.chunk_by(pageContent, fn el -> elem(el, 0) != "h3" && elem(el, 0) != "h4" && elem(el, 0) != "h5" end)
+
+    headerChunks = Enum.map(1..length(headerChunks) - 1, fn index ->
+      chunk = Enum.at(headerChunks, index)
+      lastChunk = Enum.at(headerChunks, index - 1)
+      # elem(lastChunk, 0)
+      case elem(Enum.at(lastChunk, 0), 0) do
+        "h3" -> [Enum.at(lastChunk, 0) | chunk]
+        "h4" -> [Enum.at(lastChunk, 0) | chunk]
+        "h5" -> [Enum.at(lastChunk, 0) | chunk]
+        _ -> []
+      end
+    end)
+
+    headerChunks = Enum.filter(headerChunks, fn c -> !Enum.empty?(c) end)
+    Enum.each(headerChunks, fn t -> IO.puts Enum.join(Enum.map(t, fn j -> elem(j, 0) end), " ") <> "\n" end)
+    headerChunks
   end
 end
