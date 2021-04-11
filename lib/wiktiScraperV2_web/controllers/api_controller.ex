@@ -106,11 +106,6 @@ defmodule WiktiScraperV2Web.ApiController do
     page
   end
 
-  defp section2Content(section) do
-    {:ok, document} = Floki.parse_fragment(section)
-    getWikiHeaders(document)
-  end
-
   defp getWikiHeaders(document) do
     pageContent = Floki.children(Enum.at(Floki.find(document, "div"), 0))
 
@@ -119,7 +114,7 @@ defmodule WiktiScraperV2Web.ApiController do
     headerChunks = Enum.map(1..length(headerChunks) - 1, fn index ->
       chunk = Enum.at(headerChunks, index)
       lastChunk = Enum.at(headerChunks, index - 1)
-      # elem(lastChunk, 0)
+
       case elem(Enum.at(lastChunk, 0), 0) do
         "h3" -> [Enum.at(lastChunk, 0) | chunk]
         "h4" -> [Enum.at(lastChunk, 0) | chunk]
@@ -129,7 +124,26 @@ defmodule WiktiScraperV2Web.ApiController do
     end)
 
     headerChunks = Enum.filter(headerChunks, fn c -> !Enum.empty?(c) end)
-    Enum.each(headerChunks, fn t -> IO.puts Enum.join(Enum.map(t, fn j -> elem(j, 0) end), " ") <> "\n" end)
+
     headerChunks
   end
+
+  defp section2Content(section) do
+    {:ok, document} = Floki.parse_fragment(section)
+    headers = getWikiHeaders(document)
+
+    contentMapArr = Enum.map(headers, fn hr ->
+      contentMap = %{:title => elem(Enum.at(hr, 0), 0), :content => []}
+
+      Map.put(contentMap, :content, Enum.map(Enum.slice(hr, 1, length(hr)), fn s -> Floki.text(s) end))
+    end)
+
+  end
+
+  def testPage(conn, %{"lang" => lang, "word" => word}) do
+    section = page2Section("https://en.wiktionary.org/wiki/" <> word, lang)
+    content = section2Content(section)
+    json(conn, content)
+  end
+
 end
