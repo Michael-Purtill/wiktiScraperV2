@@ -133,10 +133,12 @@ defmodule WiktiScraperV2Web.ApiController do
     headers = getWikiHeaders(document)
 
     contentMapArr = Enum.map(headers, fn hr ->
-      contentMap = %{:title => elem(Enum.at(hr, 0), 0), :content => []}
+      contentMap = %{:title => Floki.text(Enum.at(hr, 0)), :content => []}
 
       Map.put(contentMap, :content, Enum.map(Enum.slice(hr, 1, length(hr)), fn s -> Floki.text(s) end))
     end)
+
+    contentMapArr
 
   end
 
