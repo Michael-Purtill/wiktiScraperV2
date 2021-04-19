@@ -135,8 +135,22 @@ defmodule WiktiScraperV2Web.ApiController do
     contentMapArr = Enum.map(headers, fn hr ->
       contentMap = %{:title => Floki.text(Enum.at(hr, 0)), :content => []}
 
-      Map.put(contentMap, :content, Enum.map(Enum.slice(hr, 1, length(hr)), fn s -> Floki.text(s) end))
+      Map.put(contentMap, :content, Enum.map(Enum.slice(hr, 1, length(hr)), fn s ->
+        case elem(s, 0) do
+          "p" -> Floki.text(s) #NOTE: I need to make a function which will add spaces between inner spans of p tags
+          "ol" -> Enum.map(Floki.children(s), fn li -> Floki.text(li) end)
+          "ul" -> Enum.map(Floki.children(s), fn li -> Floki.text(li) end)
+          _ -> Floki.text(s)
+        end
+      end))
     end)
+  #   Map.put(contentMap, :content, Enum.map(Enum.slice(hr, 1, length(hr)), fn s ->
+
+
+  #   end))
+  # end)
+
+
 
     contentMapArr
 
