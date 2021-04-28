@@ -137,10 +137,27 @@ defmodule WiktiScraperV2Web.ApiController do
 
       Map.put(contentMap, :content, Enum.map(Enum.slice(hr, 1, length(hr)), fn s ->
         case elem(s, 0) do
-          "p" -> %{:tag => "p", :content => Floki.text(s)} #NOTE: I need to make a function which will add spaces between inner spans of p tags
-          "ol" -> %{:tag => "ol", :content => Enum.map(Floki.children(s), fn li -> Floki.text(li) end)}
-          "ul" -> %{:tag => "ul", :content => Enum.map(Floki.children(s), fn li -> Floki.text(li) end)}
-          _ -> %{:tag => elem(s, 0), :content => Floki.text(s)}
+          "p" -> %{:tag => "p", :innerContent => Floki.text(s)} #NOTE: I need to make a function which will add spaces between inner spans of p tags
+          x when x in ["ol", "ul"] -> %{:tag => x, :innerContent => Enum.map(Floki.children(s), fn li -> Floki.text(li) end)}
+          "div" -> case Floki.find(s, ".wikitable") do
+            [] -> %{:tag => elem(s, 0), :innerContent => "no wikitable"}
+            [table] ->
+              thead = Floki.find(table, "thead")
+              tbody = Floki.find(table, "tbody")
+              rowArray = []
+
+              rowArray = rowArray ++ if thead != [] do
+                [Enum.map(Floki.find(thead, "th"), fn th -> Floki.text(th) end)]
+              else
+                []
+              end
+
+              cellArrs = Enum.map(Floki.find(tbody, "tr"), fn row -> Floki.find(row, "td, th") end)
+              cells = Enum.map(cellArrs, fn cellArr -> Enum.map(cellArr, fn cell -> Floki.text(cell) end) end)
+
+              %{:tag => "table", :innerContent => rowArray ++ cells}
+          end
+          _ -> %{:tag => elem(s, 0), :innerContent => Floki.text(s)}
         end
       end))
     end)
