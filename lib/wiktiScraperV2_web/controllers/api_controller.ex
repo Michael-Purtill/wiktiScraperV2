@@ -133,36 +133,34 @@ defmodule WiktiScraperV2Web.ApiController do
     headers = getWikiHeaders(document)
 
     contentMapArr = Enum.map(headers, fn hr ->
-      contentMap = %{:title => Floki.text(Enum.at(hr, 0)), :content => []}
+      contentMap = %{:title => Floki.text(Enum.at(hr, 0), sep: " "), :content => []}
 
       Map.put(contentMap, :content, Enum.map(Enum.slice(hr, 1, length(hr)), fn s ->
         case elem(s, 0) do
-          "p" -> %{:tag => "p", :innerContent => Floki.text(s)} #NOTE: I need to make a function which will add spaces between inner spans of p tags
-          x when x in ["ol", "ul"] -> %{:tag => x, :innerContent => Enum.map(Floki.children(s), fn li -> Floki.text(li) end)}
+          "p" -> %{:tag => "p", :innerContent => Floki.text(s, sep: " ")} #NOTE: I need to make a function which will add spaces between inner spans of p tags
+          x when x in ["ol", "ul"] -> %{:tag => x, :innerContent => Enum.map(Floki.children(s), fn li -> Floki.text(li, sep: " ") end)}
           "div" -> case Floki.find(s, ".wikitable") do
-            [] -> %{:tag => elem(s, 0), :innerContent => "no wikitable"}
+            [] -> %{:tag => elem(s, 0), :innerContent => "filter me out"}
             [table] ->
               thead = Floki.find(table, "thead")
               tbody = Floki.find(table, "tbody")
               rowArray = []
 
               rowArray = rowArray ++ if thead != [] do
-                [Enum.map(Floki.find(thead, "th"), fn th -> Floki.text(th) end)]
+                [Enum.map(Floki.find(thead, "th"), fn th -> Floki.text(th, sep: " ") end)]
               else
                 []
               end
 
               cellArrs = Enum.map(Floki.find(tbody, "tr"), fn row -> Floki.find(row, "td, th") end)
-              cells = Enum.map(cellArrs, fn cellArr -> Enum.map(cellArr, fn cell -> Floki.text(cell) end) end)
+              cells = Enum.map(cellArrs, fn cellArr -> Enum.map(cellArr, fn cell -> Floki.text(cell, sep: " ") end) end)
 
               %{:tag => "table", :innerContent => rowArray ++ cells}
           end
-          _ -> %{:tag => elem(s, 0), :innerContent => Floki.text(s)}
+          _ -> %{:tag => elem(s, 0), :innerContent => Floki.text(s, sep: " ")}
         end
       end))
     end)
-
-
 
     contentMapArr
 
