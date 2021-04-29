@@ -135,9 +135,9 @@ defmodule WiktiScraperV2Web.ApiController do
     contentMapArr = Enum.map(headers, fn hr ->
       contentMap = %{:title => Floki.text(Enum.at(hr, 0), sep: " "), :content => []}
 
-      Map.put(contentMap, :content, Enum.map(Enum.slice(hr, 1, length(hr)), fn s ->
+      Map.put(contentMap, :content, Enum.filter(Enum.map(Enum.slice(hr, 1, length(hr)), fn s ->
         case elem(s, 0) do
-          "p" -> %{:tag => "p", :innerContent => Floki.text(s, sep: " ")} #NOTE: I need to make a function which will add spaces between inner spans of p tags
+          "p" -> %{:tag => "p", :innerContent => Floki.text(s, sep: " ")}
           x when x in ["ol", "ul"] -> %{:tag => x, :innerContent => Enum.map(Floki.children(s), fn li -> Floki.text(li, sep: " ") end)}
           "div" -> case Floki.find(s, ".wikitable") do
             [] -> %{:tag => elem(s, 0), :innerContent => "filter me out"}
@@ -159,7 +159,7 @@ defmodule WiktiScraperV2Web.ApiController do
           end
           _ -> %{:tag => elem(s, 0), :innerContent => Floki.text(s, sep: " ")}
         end
-      end))
+      end), fn cont -> Map.get(cont, :innerContent, "filter me out") != "filter me out" end))
     end)
 
     contentMapArr
