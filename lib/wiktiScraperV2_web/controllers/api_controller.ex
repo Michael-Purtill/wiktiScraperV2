@@ -166,10 +166,62 @@ defmodule WiktiScraperV2Web.ApiController do
 
   end
 
-  def testPage(conn, %{"lang" => lang, "word" => word}) do
+  defp scrubHtml(html) do #gets rid of all particular data in an html section and returns a scrubbed html with only important content
+    {:ok, document} = Floki.parse_fragment(html)
+    pageContent = Floki.children(Enum.at(Floki.find(document, "div"), 0))
+
+    scrubbedHtml = Enum.join(Enum.map(pageContent, fn tag ->
+      case elem(tag, 0) do
+        x when x in ["h1", "h2", "h3", "h4", "h5", "h6"] -> "<" <> x <> ">" <> Floki.text(tag) <> "</" <> x <> ">"
+        x when x in ["ul", "ol", "p", "span"] -> "<" <> x <> ">" <> "</" <> x <> ">"
+        "div" -> case Floki.find(tag, ".wikitable") do
+          [] -> ""
+          [table] ->
+            thead = Floki.find(table, "thead")
+            tbody = Floki.find(table, "tbody")
+
+            tableString = "<table>"
+
+            tableString = tableString <> if thead != [] do
+              subString = "<thead>"
+              subString <> Enum.join(Enum.map(Floki.find(thead, "tr"), fn tr ->
+                "<tr>" <> Enum.join(Enum.map(Floki.children(tr), fn child ->
+                  case elem(child, 0) do
+                    "th" -> "<th>" <> Floki.text(child) <> "</th>"
+                    "td" -> "<td></td>"
+                  end
+                end), "") <> "</tr>"
+              end), "") <> "</thead>"
+            else
+              ""
+            end
+
+            tableString = tableString <> if tbody != [] do
+              subString = "<tbody>"
+              subString <> Enum.join(Enum.map(Floki.find(tbody, "tr"), fn tr ->
+                "<tr>" <> Enum.join(Enum.map(Floki.children(tr), fn child ->
+                  case elem(child, 0) do
+                    "th" -> "<th>" <> Floki.text(child) <> "</th>"
+                    "td" -> "<td></td>"
+                  end
+                end), "") <> "</tr>"
+              end), "") <> "</tbody>"
+            else
+              ""
+            end
+
+            tableString <> "</table>"
+        end
+        _ -> "<" <> elem(tag, 0) <> ">" <> "</" <> elem(tag, 0) <> ">"
+      end
+
+    end), "")
+  end
+
+  def testPage(conn, %{"lang" => lang, "word" => word}) do #a controller for testing new features during development
     section = page2Section("https://en.wiktionary.org/wiki/" <> word, lang)
-    content = section2Content(section)
-    json(conn, content)
+    content = scrubHtml(section)
+    json(conn, %{:stuff => content})
   end
 
 end
