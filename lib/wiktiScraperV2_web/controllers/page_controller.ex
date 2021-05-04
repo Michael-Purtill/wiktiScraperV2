@@ -8,4 +8,8 @@ defmodule WiktiScraperV2Web.PageController do
   def lang(conn, %{"lang" => lang}) do
     render(conn, "lang.html")
   end
+
+  def testpage(conn, _params) do
+    render(conn, "testpage.html")
+  end
 end

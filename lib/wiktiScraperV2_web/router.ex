@@ -17,7 +17,8 @@ defmodule WiktiScraperV2Web.Router do
     pipe_through :browser
 
     get "/", PageController, :index
-    get "/:lang", PageController, :lang
+    get "/lang/:lang", PageController, :lang
+    get "/testPage", PageController, :testpage
   end
 
   scope "/api", WiktiScraperV2Web do
@@ -26,6 +27,7 @@ defmodule WiktiScraperV2Web.Router do
     get "/langlist", ApiController, :langlist
     get "/posLinks/:lang", ApiController, :getPOSLinks
     get "/testPage/:lang/:word", ApiController, :testPage
+    get "/wordInfo/:lang/:word", ApiController, :wordInfo
   end
 
   # Other scopes may use custom stacks.

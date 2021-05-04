@@ -224,4 +224,10 @@ defmodule WiktiScraperV2Web.ApiController do
     json(conn, %{:stuff => content})
   end
 
+  def wordInfo(conn, %{"lang" => lang, "word" => word}) do #probably will only be used during testing, get info for a single word in a language
+    section = page2Section("https://en.wiktionary.org/wiki/" <> word, lang)
+    content = section2Content(section)
+    json(conn, content)
+  end
+
 end
