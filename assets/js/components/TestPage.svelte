@@ -12,24 +12,25 @@
 </script>
 
 <div>
-    {#each langInfo as datum}
+    {#each langInfo as datum, i}
         <div>
             <h3>{datum.title.replace("[ edit ]", "").replace("[edit]", "")}</h3>
-            {#each datum.content as content}
+            {#each datum.content as content, j}
                 {#if content.tag == "p"}
-                <p>{content.innerContent.replace("\n", "")}</p>
+                <p id={`${i}:${j}`}>{content.innerContent.replace("\n", "")}</p>
                 {:else if content.tag == "ul" || content.tag == "ol"}
-                {#each content.innerContent as innerContent}
-                    <li>{innerContent.replace("\n", "")}</li>
-                {/each}
-
+                <ul id={`${i}:${j}`}>
+                    {#each content.innerContent as innerContent}
+                        <li>{innerContent.replace("\n", "")}</li>
+                    {/each}
+                </ul>
                 {:else if content.tag="table"}
-                <table>
+                <table id={`${i}:${j}`}>
                     <tbody>
-                        {#each content.innerContent as innerContent}
+                        {#each content.innerContent as innerContent, k}
                             <tr>
-                                {#each innerContent as inner}
-                                    <td>{inner.replace("\n", "")}</td>
+                                {#each innerContent as inner, l}
+                                    <td id={`${k}:${l}`}>{inner.replace("\n", "")}</td>
                                 {/each}
                             </tr>
                         {/each}
