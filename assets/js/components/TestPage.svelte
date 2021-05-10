@@ -4,10 +4,22 @@
     
     
     let langInfo = [];
+    let selectors = [];
 
     onMount(async () => {
         fetch("/api/wordInfo/" + "Czech/pes").then((r) => {return r.json()}).then((d) => {langInfo = d })
-    })
+    });
+
+    function handleClick(e) {
+        if (_.includes(selectors, e.target.id)) {
+            selectors = _.filter(selectors, s => s != e.target.id)
+        }
+        else {
+            let selectorsCopy = _.cloneDeep(selectors);
+            selectorsCopy.push(e.target.id);
+            selectors = selectorsCopy;
+        }
+    }
 
 </script>
 
@@ -17,9 +29,9 @@
             <h3>{datum.title.replace("[ edit ]", "").replace("[edit]", "")}</h3>
             {#each datum.content as content, j}
                 {#if content.tag == "p"}
-                <p id={`${i}:${j}`}>{content.innerContent.replace("\n", "")}</p>
+                <p id={`${i}:${j}`} on:click={handleClick}>{content.innerContent.replace("\n", "")}</p>
                 {:else if content.tag == "ul" || content.tag == "ol"}
-                <ul id={`${i}:${j}`}>
+                <ul id={`${i}:${j}`} on:click={handleClick}>
                     {#each content.innerContent as innerContent}
                         <li>{innerContent.replace("\n", "")}</li>
                     {/each}
@@ -30,7 +42,7 @@
                         {#each content.innerContent as innerContent, k}
                             <tr>
                                 {#each innerContent as inner, l}
-                                    <td id={`${k}:${l}`}>{inner.replace("\n", "")}</td>
+                                    <td id={`${k}:${l}`} on:click={handleClick}>{inner.replace("\n", "")}</td>
                                 {/each}
                             </tr>
                         {/each}
