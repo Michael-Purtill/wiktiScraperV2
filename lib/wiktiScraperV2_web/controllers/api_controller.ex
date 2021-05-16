@@ -86,10 +86,24 @@ defmodule WiktiScraperV2Web.ApiController do
         end)
 
         startIndex = Enum.find_index(indexes, fn i -> i == 1 end)
-        endIndex = startIndex + Enum.find_index(Enum.slice(indexes, startIndex, length(indexes)), fn i -> i == -1 end)
+        endIndex = Enum.find_index(Enum.slice(indexes, startIndex, length(indexes)), fn i -> i == -1 end)
+
+        noEnd = endIndex == nil
+
+        endIndex = if endIndex != nil do
+          startIndex + endIndex
+        else
+          startIndex
+        end
 
         startIndex = startIndex + 1
         endIndex = endIndex - 1
+
+        endIndex = if noEnd == true do
+          length(pageContent) - startIndex - 1
+        else
+          endIndex
+        end
 
         sectionArray = Enum.map(startIndex..endIndex, fn i -> Floki.raw_html(Enum.at(pageContent, i)) end)
 

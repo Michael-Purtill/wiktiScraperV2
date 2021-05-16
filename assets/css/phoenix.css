@@ -4,12 +4,81 @@ body, header {
 
 body {
   margin: 0;
+  background-color: #9390a7;
 }
 
 #header {
   color: black;
+    text-align: center;
+    font-size: 4em;
+    background-color: #7788df;
+    width: fit-content;
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: 1em;
+    padding-right: 1em;
+    margin-bottom: 0.5em;
 }
 
 #innerApp {
   text-align: center;
 }
+
+.container {
+  margin-left: 5em;
+  margin-right: 5em;
+}
+
+.langInfoContainer {
+  box-sizing: border-box;
+  box-shadow: -0.1em 0.5em 0.5em #7d8195;
+  border: 1px solid #6e6e6e;
+  margin-bottom: 1em;
+  border-radius: 0.5em;
+  width: 70%;
+  margin-left: auto;
+  margin-right: auto;
+  background-color: #cbcbe1;
+}
+
+.langInfoContainer > table {
+  width: 50%;
+  border-collapse: separate;
+}
+
+
+.langInfoContainer > table > tbody > tr > td {
+  border: 1px solid #a0a6c6;
+  background-color: #e1dcf3;
+}
+
+.langInfoContainer > table > tbody >tr:nth-child(1) {
+  font-weight: bold;
+}
+
+.langInfoContainer > ul {
+  list-style-type: none;
+  background-color: #e1dcf3;
+  width: fit-content;
+  margin-left: 0.5em;
+  padding: 0;
+}
+
+.langInfoContainer > ul> li {
+  border-bottom: 1px solid #a0a6c6;
+  width: fit-content;
+}
+
+.langInfoContainer > p {
+  border-bottom: 1px solid #a0a6c6;
+  background-color: #e1dcf3;
+  width: fit-content;
+  margin-left: 0.5em;
+  padding: 0;
+}
+
+.langInfoContainer > h3 {
+  text-align: center;
+}
+
+
