@@ -52,7 +52,7 @@
                         <li>{innerContent.replaceAll("\n", "").replaceAll("  ", " ").replaceAll(" ,", ",").replaceAll(" .", ".")}</li>
                     {/each}
                 </ul>
-                {:else if content.tag="table"}
+                {:else if content.tag == "table"}
                 <table>
                     <tbody>
                         {#each content.innerContent as innerContent, k}
@@ -64,6 +64,21 @@
                         {/each}
                     </tbody>
                 </table>
+
+                {:else if content.tag == "tables"}
+                    {#each content.innerContent as tableArr}
+                        <table>
+                            <tbody>
+                                {#each tableArr as trow}
+                                    <tr>
+                                        {#each trow as tcol}
+                                        <td>{tcol.replaceAll("\n", "").replaceAll("  ", " ").replaceAll(" ,", ",").replaceAll(" .", ".")}</td>
+                                        {/each}
+                                    </tr>
+                                {/each}
+                            </tbody>
+                        </table>
+                    {/each}
                 {/if}
             {/each}
         </div>

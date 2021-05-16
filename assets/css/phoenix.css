@@ -4,7 +4,7 @@ body, header {
 
 body {
   margin: 0;
-  background-color: #9390a7;
+  background-color: #ffffff;
 }
 
 #header {
@@ -38,7 +38,7 @@ body {
   width: 70%;
   margin-left: auto;
   margin-right: auto;
-  background-color: #cbcbe1;
+  background-color: #ff5e0069;
 }
 
 .langInfoContainer > table {
@@ -50,11 +50,11 @@ body {
 
 .langInfoContainer > table > tbody > tr > td {
   border: 1px solid #a0a6c6;
-  background-color: #e1dcf3;
+  background-color: #f8ffde;
 }
 
 .langInfoContainer > table > tbody > tr > td:hover {
-  background-color: #b7b9e7;
+  background-color: #ffe97e;
 }
 
 .langInfoContainer > table > tbody >tr:nth-child(1) {
@@ -63,14 +63,14 @@ body {
 
 .langInfoContainer > ul {
   list-style-type: none;
-  background-color: #e1dcf3;
+  background-color: #f8ffde;
   width: fit-content;
   margin-left: 0.5em;
   padding: 0;
 }
 
 .langInfoContainer > ul:hover {
-  background-color: #b7b9e7;
+  background-color: #ffe97e;
 }
 
 .langInfoContainer > ul> li {
@@ -80,14 +80,14 @@ body {
 
 .langInfoContainer > p {
   border-bottom: 1px solid #a0a6c6;
-  background-color: #e1dcf3;
+  background-color: #f8ffde;
   width: fit-content;
   margin-left: 0.5em;
   padding: 0;
 }
 
 .langInfoContainer > p:hover {
-  background-color: #b7b9e7;
+  background-color: #ffe97e;
 }
 
 .langInfoContainer > h3 {
@@ -97,7 +97,7 @@ body {
 .langInfoContainer > button {
   text-align: center;
   border: none;
-  background-color: #e1dcf3;
+  background-color: #f8ffde;
   margin-left: 0.5em;
   cursor: pointer;
   box-shadow: 0.2em 0.2em 0.3em grey;
@@ -110,7 +110,7 @@ body {
 .langInfoContainer > button:hover {
   text-align: center;
   border: none;
-  background-color: #b7b9e7;
+  background-color: #ffe97e;
   margin-left: 0.5em;
   cursor: pointer;
   box-shadow: 0.2em 0.2em 0.3em grey;
