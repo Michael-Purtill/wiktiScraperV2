@@ -20,12 +20,7 @@
         }
         else {
             let selectorsCopy = _.cloneDeep(selectors);
-            if (e.target.localName == "td") {
-                selectorsCopy.push(e.target.parentElement.parentElement.parentElement.id + "->" + e.target.id);
-            } 
-            else {
-                selectorsCopy.push(e.target.id);
-            }
+            selectorsCopy.push(e.target.id);
             selectors = selectorsCopy;
         }
     }
@@ -58,12 +53,12 @@
                     {/each}
                 </ul>
                 {:else if content.tag="table"}
-                <table id={`${i}:${j}`}>
+                <table>
                     <tbody>
                         {#each content.innerContent as innerContent, k}
                             <tr>
                                 {#each innerContent as inner, l}
-                                    <td id={`${k}:${l}`} on:click={handleClick}>{inner.replaceAll("\n", "").replaceAll("  ", " ").replaceAll(" ,", ",").replaceAll(" .", ".")}</td>
+                                    <td id={`${i}:${j}->${k}:${l}`} on:click={handleClick}>{inner.replaceAll("\n", "").replaceAll("  ", " ").replaceAll(" ,", ",").replaceAll(" .", ".")}</td>
                                 {/each}
                             </tr>
                         {/each}
@@ -73,8 +68,8 @@
             {/each}
         </div>
     {/each}
-
-    <button on:click={handleSubmit}>Submit</button>
+    <div class="langInfoContainer"><button on:click={handleSubmit}>Submit</button></div>
+    
 </div>
 
 <style></style>

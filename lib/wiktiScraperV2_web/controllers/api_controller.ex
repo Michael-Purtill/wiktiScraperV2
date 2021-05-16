@@ -166,7 +166,7 @@ defmodule WiktiScraperV2Web.ApiController do
                 []
               end
 
-              cellArrs = Enum.map(Floki.find(tbody, "tr"), fn row -> Floki.find(row, "td, th") end)
+              cellArrs = Enum.map(Floki.find(tbody, "tr"), fn row -> Floki.find(row, "td,th") end)
               cells = Enum.map(cellArrs, fn cellArr -> Enum.map(cellArr, fn cell -> Floki.text(cell, sep: " ") end) end)
 
               %{:tag => "table", :innerContent => rowArray ++ cells}
