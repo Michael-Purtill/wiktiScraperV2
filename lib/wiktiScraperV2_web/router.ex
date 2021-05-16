@@ -28,6 +28,7 @@ defmodule WiktiScraperV2Web.Router do
     get "/posLinks/:lang", ApiController, :getPOSLinks
     get "/testPage/:lang/:word", ApiController, :testPage
     get "/wordInfo/:lang/:word", ApiController, :wordInfo
+    post "/testPageJsonHandler", ApiController, :testPageJsonHandler
   end
 
   # Other scopes may use custom stacks.

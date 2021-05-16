@@ -281,4 +281,27 @@ defmodule WiktiScraperV2Web.ApiController do
     json(conn, content)
   end
 
+  defp wordInfoCreator(%{"lang" => lang, "word" => word}) do
+    section = page2Section("https://en.wiktionary.org/wiki/" <> word, lang)
+    content = section2Content(section)
+    content
+  end
+
+  def testPageJsonHandler(conn, %{"selectors" => selectors, "lang" => lang, "word" => word}) do
+    wordData = wordInfoCreator(%{"lang" => lang, "word" => word})
+
+    selected = Enum.map(selectors, fn s ->
+      selectKeys = String.split(s, ":")
+      {index1, _} = Integer.parse(Enum.at(selectKeys, 0))
+      {index2, _} = Integer.parse(Enum.at(selectKeys, 1))
+
+      obj = Enum.at(wordData, index1)
+      content = Map.get(obj, :content)
+      content = Enum.at(content, index2)
+      content
+    end)
+
+    json(conn, selected)
+  end
+
 end

@@ -16,9 +16,26 @@
         }
         else {
             let selectorsCopy = _.cloneDeep(selectors);
-            selectorsCopy.push(e.target.id);
+            if (e.target.localName == "td") {
+                selectorsCopy.push(e.target.parentElement.parentElement.parentElement.id + "->" + e.target.id);
+            } 
+            else {
+                selectorsCopy.push(e.target.id);
+            }
             selectors = selectorsCopy;
         }
+    }
+
+    function handleSubmit() {
+        fetch("/api/testPageJsonHandler", {
+            method: "POST",
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({selectors: selectors, lang: "Czech", word: "pes"})
+            
+         }).then((res) => console.log(res));
     }
 
 </script>
@@ -52,6 +69,8 @@
             {/each}
         </div>
     {/each}
+
+    <button on:click={handleSubmit}>Submit</button>
 </div>
 
 <style></style>
