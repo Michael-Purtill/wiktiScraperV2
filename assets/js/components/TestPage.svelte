@@ -58,7 +58,7 @@
                         {#each content.innerContent as innerContent, k}
                             <tr>
                                 {#each innerContent as inner, l}
-                                    <td rowspan={inner.rowspan} colspan={inner.colspan} id={`${i}:${j}->${k}:${l}`} on:click={handleClick}>{inner.text.replaceAll("\n", "").replaceAll("  ", " ").replaceAll(" ,", ",").replaceAll(" .", ".")}</td>
+                                    <td rowspan={inner.rowspan} colspan={inner.colspan} id={`${i}:${j}:${k}:${l}`} on:click={handleClick}>{inner.text.replaceAll("\n", "").replaceAll("  ", " ").replaceAll(" ,", ",").replaceAll(" .", ".")}</td>
                                 {/each}
                             </tr>
                         {/each}
@@ -66,13 +66,13 @@
                 </table>
 
                 {:else if content.tag == "tables"}
-                    {#each content.innerContent as tableArr}
+                    {#each content.innerContent as tableArr, k}
                         <table>
                             <tbody>
-                                {#each tableArr as trow}
+                                {#each tableArr as trow, l}
                                     <tr>
-                                        {#each trow as tcol}
-                                        <td rowspan={tcol.rowspan} colspan={tcol.colspan}>{tcol.text.replaceAll("\n", "").replaceAll("  ", " ").replaceAll(" ,", ",").replaceAll(" .", ".")}</td>
+                                        {#each trow as tcol, m}
+                                        <td id={`${i}:${j}:${k}:${l}:${m}`} rowspan={tcol.rowspan} colspan={tcol.colspan}>{tcol.text.replaceAll("\n", "").replaceAll("  ", " ").replaceAll(" ,", ",").replaceAll(" .", ".")}</td>
                                         {/each}
                                     </tr>
                                 {/each}
