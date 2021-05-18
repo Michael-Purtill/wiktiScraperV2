@@ -229,8 +229,8 @@ defmodule WiktiScraperV2Web.ApiController do
               subString <> Enum.join(Enum.map(Floki.find(thead, "tr"), fn tr ->
                 "<tr>" <> Enum.join(Enum.map(Floki.children(tr), fn child ->
                   case elem(child, 0) do
-                    "th" -> "<th" <> if length(Floki.attribute(child, "rowspan")) > 0 do " rowspan=" <> Enum.at(Floki.attribute(child, "rowspan"), 0) else "" end <> if length(Floki.attribute(child, "colspan")) > 0 do " colspan=" <> Enum.at(Floki.attribute(child, "colspan"), 0) else "" end <>  ">" <> Floki.text(child) <> "</th>"
-                    "td" -> "<td" <> if length(Floki.attribute(child, "rowspan")) > 0 do " rowspan=" <> Enum.at(Floki.attribute(child, "rowspan"), 0) else "" end <> if length(Floki.attribute(child, "colspan")) > 0 do " colspan=" <> Enum.at(Floki.attribute(child, "colspan"), 0) else "" end <>  ">" <> "</td>"
+                    "th" -> "<th" <> if length(Floki.attribute(child, "rowspan")) > 0 do " rowspan='" <> Enum.at(Floki.attribute(child, "rowspan"), 0) <> "'" else "" end <> if length(Floki.attribute(child, "colspan")) > 0 do " colspan='" <> Enum.at(Floki.attribute(child, "colspan"), 0) <> "'" else "" end <>  ">" <> Floki.text(child) <> "</th>"
+                    "td" -> "<td" <> if length(Floki.attribute(child, "rowspan")) > 0 do " rowspan='" <> Enum.at(Floki.attribute(child, "rowspan"), 0) <> "'" else "" end <> if length(Floki.attribute(child, "colspan")) > 0 do " colspan='" <> Enum.at(Floki.attribute(child, "colspan"), 0) <> "'" else "" end <>  ">" <> "</td>"
                   end
                 end), "") <> "</tr>"
               end), "") <> "</thead>"
@@ -243,8 +243,8 @@ defmodule WiktiScraperV2Web.ApiController do
               subString <> Enum.join(Enum.map(Floki.find(tbody, "tr"), fn tr ->
                 "<tr>" <> Enum.join(Enum.map(Floki.children(tr), fn child ->
                   case elem(child, 0) do
-                    "th" -> "<th" <> if length(Floki.attribute(child, "rowspan")) > 0 do " rowspan=" <> Enum.at(Floki.attribute(child, "rowspan"), 0) else "" end <> if length(Floki.attribute(child, "colspan")) > 0 do " colspan=" <> Enum.at(Floki.attribute(child, "colspan"), 0) else "" end <>  ">" <> Floki.text(child) <> "</th>"
-                    "td" -> "<td" <> if length(Floki.attribute(child, "rowspan")) > 0 do " rowspan=" <> Enum.at(Floki.attribute(child, "rowspan"), 0) else "" end <> if length(Floki.attribute(child, "colspan")) > 0 do " colspan=" <> Enum.at(Floki.attribute(child, "colspan"), 0) else "" end <>  ">" <> "</td>"
+                    "th" -> "<th" <> if length(Floki.attribute(child, "rowspan")) > 0 do " rowspan='" <> Enum.at(Floki.attribute(child, "rowspan"), 0) <> "'" else "" end <> if length(Floki.attribute(child, "colspan")) > 0 do " colspan='" <> Enum.at(Floki.attribute(child, "colspan"), 0) <> "'" else "" end <>  ">" <> Floki.text(child) <> "</th>"
+                    "td" -> "<td" <> if length(Floki.attribute(child, "rowspan")) > 0 do " rowspan='" <> Enum.at(Floki.attribute(child, "rowspan"), 0) <> "'" else "" end <> if length(Floki.attribute(child, "colspan")) > 0 do " colspan='" <> Enum.at(Floki.attribute(child, "colspan"), 0) <> "'" else "" end <>  ">" <> "</td>"
                   end
                 end), "") <> "</tr>"
               end), "") <> "</tbody>"
@@ -265,8 +265,8 @@ defmodule WiktiScraperV2Web.ApiController do
                   subString <> Enum.join(Enum.map(Floki.find(thead, "tr"), fn tr ->
                     "<tr>" <> Enum.join(Enum.map(Floki.children(tr), fn child ->
                       case elem(child, 0) do
-                        "th" -> "<th" <> if length(Floki.attribute(child, "rowspan")) > 0 do " rowspan=" <> Enum.at(Floki.attribute(child, "rowspan"), 0) else "" end <> if length(Floki.attribute(child, "colspan")) > 0 do " colspan=" <> Enum.at(Floki.attribute(child, "colspan"), 0) else "" end <>  ">" <> Floki.text(child) <> "</th>"
-                        "td" -> "<td" <> if length(Floki.attribute(child, "rowspan")) > 0 do " rowspan=" <> Enum.at(Floki.attribute(child, "rowspan"), 0) else "" end <> if length(Floki.attribute(child, "colspan")) > 0 do " colspan=" <> Enum.at(Floki.attribute(child, "colspan"), 0) else "" end <>  ">" <> "</td>"
+                        "th" -> "<th" <> if length(Floki.attribute(child, "rowspan")) > 0 do " rowspan='" <> Enum.at(Floki.attribute(child, "rowspan"), 0) <> "'" else "" end <> if length(Floki.attribute(child, "colspan")) > 0 do " colspan='" <> Enum.at(Floki.attribute(child, "colspan"), 0) <> "'" else "" end <>  ">" <> Floki.text(child) <> "</th>"
+                        "td" -> "<td" <> if length(Floki.attribute(child, "rowspan")) > 0 do " rowspan='" <> Enum.at(Floki.attribute(child, "rowspan"), 0) <> "'" else "" end <> if length(Floki.attribute(child, "colspan")) > 0 do " colspan='" <> Enum.at(Floki.attribute(child, "colspan"), 0) <> "'" else "" end <>  ">" <> "</td>"
                       end
                     end), "") <> "</tr>"
                   end), "") <> "</thead>"
@@ -279,8 +279,8 @@ defmodule WiktiScraperV2Web.ApiController do
                   subString <> Enum.join(Enum.map(Floki.find(tbody, "tr"), fn tr ->
                     "<tr>" <> Enum.join(Enum.map(Floki.children(tr), fn child ->
                       case elem(child, 0) do
-                        "th" -> "<th" <> if length(Floki.attribute(child, "rowspan")) > 0 do " rowspan=" <> Enum.at(Floki.attribute(child, "rowspan"), 0) else "" end <> if length(Floki.attribute(child, "colspan")) > 0 do " colspan=" <> Enum.at(Floki.attribute(child, "colspan"), 0) else "" end <>  ">" <> Floki.text(child) <> "</th>"
-                        "td" -> "<td" <> if length(Floki.attribute(child, "rowspan")) > 0 do " rowspan=" <> Enum.at(Floki.attribute(child, "rowspan"), 0) else "" end <> if length(Floki.attribute(child, "colspan")) > 0 do " colspan=" <> Enum.at(Floki.attribute(child, "colspan"), 0) else "" end <>  ">" <> "</td>"
+                        "th" -> "<th" <> if length(Floki.attribute(child, "rowspan")) > 0 do " rowspan='" <> Enum.at(Floki.attribute(child, "rowspan"), 0) <> "'" else "" end <> if length(Floki.attribute(child, "colspan")) > 0 do " colspan='" <> Enum.at(Floki.attribute(child, "colspan"), 0) <> "'" else "" end <>  ">" <> Floki.text(child) <> "</th>"
+                        "td" -> "<td" <> if length(Floki.attribute(child, "rowspan")) > 0 do " rowspan='" <> Enum.at(Floki.attribute(child, "rowspan"), 0) <> "'" else "" end <> if length(Floki.attribute(child, "colspan")) > 0 do " colspan='" <> Enum.at(Floki.attribute(child, "colspan"), 0) <> "'" else "" end <>  ">" <> "</td>"
                       end
                     end), "") <> "</tr>"
                   end), "") <> "</tbody>"
@@ -292,7 +292,7 @@ defmodule WiktiScraperV2Web.ApiController do
               end), "")
         end
 
-        _ -> "<" <> elem(tag, 0) <> ">" <> "</" <> elem(tag, 0) <> ">"
+        _ -> ""
       end
 
     end), "")
