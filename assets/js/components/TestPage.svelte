@@ -58,7 +58,7 @@
                         {#each content.innerContent as innerContent, k}
                             <tr>
                                 {#each innerContent as inner, l}
-                                    <td id={`${i}:${j}->${k}:${l}`} on:click={handleClick}>{inner.replaceAll("\n", "").replaceAll("  ", " ").replaceAll(" ,", ",").replaceAll(" .", ".")}</td>
+                                    <td rowspan={inner.rowspan} colspan={inner.colspan} id={`${i}:${j}->${k}:${l}`} on:click={handleClick}>{inner.text.replaceAll("\n", "").replaceAll("  ", " ").replaceAll(" ,", ",").replaceAll(" .", ".")}</td>
                                 {/each}
                             </tr>
                         {/each}
@@ -72,7 +72,7 @@
                                 {#each tableArr as trow}
                                     <tr>
                                         {#each trow as tcol}
-                                        <td>{tcol.replaceAll("\n", "").replaceAll("  ", " ").replaceAll(" ,", ",").replaceAll(" .", ".")}</td>
+                                        <td rowspan={tcol.rowspan} colspan={tcol.colspan}>{tcol.text.replaceAll("\n", "").replaceAll("  ", " ").replaceAll(" ,", ",").replaceAll(" .", ".")}</td>
                                         {/each}
                                     </tr>
                                 {/each}

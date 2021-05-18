@@ -161,13 +161,19 @@ defmodule WiktiScraperV2Web.ApiController do
               rowArray = []
 
               rowArray = rowArray ++ if thead != [] do
-                [Enum.map(Floki.find(thead, "th"), fn th -> Floki.text(th, sep: " ") end)]
+                [Enum.map(Floki.find(thead, "th"), fn th -> %{"text" => Floki.text(th, sep: " "),
+                "rowspan" => if length(Floki.attribute(th, "rowspan")) > 0 do String.to_integer(Enum.at(Floki.attribute(th, "rowspan"), 0)) else 1 end,
+                "colspan" => if length(Floki.attribute(th, "colspan")) > 0 do String.to_integer(Enum.at(Floki.attribute(th, "colspan"), 0)) else 1 end
+                } end)]
               else
                 []
               end
 
               cellArrs = Enum.map(Floki.find(tbody, "tr"), fn row -> Floki.find(row, "td,th") end)
-              cells = Enum.map(cellArrs, fn cellArr -> Enum.map(cellArr, fn cell -> Floki.text(cell, sep: " ") end) end)
+              cells = Enum.map(cellArrs, fn cellArr -> Enum.map(cellArr, fn cell -> %{"text" => Floki.text(cell, sep: " "),
+              "rowspan" => if length(Floki.attribute(cell, "rowspan")) > 0 do String.to_integer(Enum.at(Floki.attribute(cell, "rowspan"), 0)) else 1 end,
+              "colspan" => if length(Floki.attribute(cell, "colspan")) > 0 do String.to_integer(Enum.at(Floki.attribute(cell, "colspan"), 0)) else 1 end
+              } end) end)
 
               %{:tag => "table", :innerContent => rowArray ++ cells}
               [head | tail] -> %{:tag => "tables", :innerContent => Enum.map([head | tail], fn tbl ->
@@ -176,13 +182,19 @@ defmodule WiktiScraperV2Web.ApiController do
                 rowArray = []
 
                 rowArray = rowArray ++ if thead != [] do
-                  [Enum.map(Floki.find(thead, "th"), fn th -> Floki.text(th, sep: " ") end)]
+                  [Enum.map(Floki.find(thead, "th"), fn th -> %{"text" => Floki.text(th, sep: " "),
+                  "rowspan" => if length(Floki.attribute(th, "rowspan")) > 0 do String.to_integer(Enum.at(Floki.attribute(th, "rowspan"), 0)) else 1 end,
+                  "colspan" => if length(Floki.attribute(th, "colspan")) > 0 do String.to_integer(Enum.at(Floki.attribute(th, "colspan"), 0)) else 1 end
+                } end)]
                 else
                   []
                 end
 
                 cellArrs = Enum.map(Floki.find(tbody, "tr"), fn row -> Floki.find(row, "td,th") end)
-                cells = Enum.map(cellArrs, fn cellArr -> Enum.map(cellArr, fn cell -> Floki.text(cell, sep: " ") end) end)
+                cells = Enum.map(cellArrs, fn cellArr -> Enum.map(cellArr, fn cell -> %{"text" => Floki.text(cell, sep: " "),
+                "rowspan" => if length(Floki.attribute(cell, "rowspan")) > 0 do String.to_integer(Enum.at(Floki.attribute(cell, "rowspan"), 0)) else 1 end,
+                "colspan" => if length(Floki.attribute(cell, "colspan")) > 0 do String.to_integer(Enum.at(Floki.attribute(cell, "colspan"), 0)) else 1 end
+              } end) end)
 
                 rowArray ++ cells
               end)}

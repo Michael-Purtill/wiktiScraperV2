@@ -18,6 +18,9 @@ body {
     padding-left: 1em;
     padding-right: 1em;
     margin-bottom: 0.5em;
+    border-radius: 0.15em;
+    padding-bottom: 0.1em;
+    padding-top: 0.1em;
 }
 
 #innerApp {
@@ -31,30 +34,34 @@ body {
 
 .langInfoContainer {
   box-sizing: border-box;
-  box-shadow: -0.1em 0.5em 0.5em #7d8195;
-  border: 1px solid #6e6e6e;
+  box-shadow: 0.1em 0.2em 0.1em #d9ebff;
+  border: 1px solid #dbdbdb;
   margin-bottom: 1em;
   border-radius: 0.5em;
   width: 70%;
   margin-left: auto;
   margin-right: auto;
-  background-color: #ff5e0069;
+  background-color: #f5f5f5;
 }
 
 .langInfoContainer > table {
-  width: 50%;
+  width: 70%;
   border-collapse: separate;
-  margin-left: 0.5em;
+  margin-left: auto;
+  margin-right: auto;
+  border-spacing: 0;
+  margin-bottom: 1em;
 }
 
 
 .langInfoContainer > table > tbody > tr > td {
   border: 1px solid #a0a6c6;
-  background-color: #f8ffde;
+  background-color: #e0e1ff;
 }
 
 .langInfoContainer > table > tbody > tr > td:hover {
-  background-color: #ffe97e;
+  background-color: #ffbc70;
+  cursor: pointer;
 }
 
 .langInfoContainer > table > tbody >tr:nth-child(1) {
@@ -63,14 +70,16 @@ body {
 
 .langInfoContainer > ul {
   list-style-type: none;
-  background-color: #f8ffde;
+  background-color: #e0e1ff;
   width: fit-content;
-  margin-left: 0.5em;
   padding: 0;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .langInfoContainer > ul:hover {
-  background-color: #ffe97e;
+  background-color: #ffbc70;
+  cursor: pointer;
 }
 
 .langInfoContainer > ul> li {
@@ -80,14 +89,16 @@ body {
 
 .langInfoContainer > p {
   border-bottom: 1px solid #a0a6c6;
-  background-color: #f8ffde;
+  background-color: #e0e1ff;
   width: fit-content;
-  margin-left: 0.5em;
+  margin-left: auto;
+  margin-right: auto;
   padding: 0;
 }
 
 .langInfoContainer > p:hover {
-  background-color: #ffe97e;
+  background-color: #ffbc70;
+  cursor: pointer;
 }
 
 .langInfoContainer > h3 {
@@ -97,7 +108,7 @@ body {
 .langInfoContainer > button {
   text-align: center;
   border: none;
-  background-color: #f8ffde;
+  background-color: #e0e1ff;
   margin-left: 0.5em;
   cursor: pointer;
   box-shadow: 0.2em 0.2em 0.3em grey;
@@ -110,7 +121,7 @@ body {
 .langInfoContainer > button:hover {
   text-align: center;
   border: none;
-  background-color: #ffe97e;
+  background-color: #ffbc70;
   margin-left: 0.5em;
   cursor: pointer;
   box-shadow: 0.2em 0.2em 0.3em grey;
