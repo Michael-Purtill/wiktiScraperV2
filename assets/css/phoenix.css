@@ -105,7 +105,7 @@ body {
   text-align: center;
 }
 
-.langInfoContainer > button {
+.langInfoContainer > button , a{
   text-align: center;
   border: none;
   background-color: #e0e1ff;
@@ -118,7 +118,7 @@ body {
   height: 3em;
 }
 
-.langInfoContainer > button:hover {
+.langInfoContainer > button:hover, a:hover {
   text-align: center;
   border: none;
   background-color: #ffbc70;
@@ -131,4 +131,34 @@ body {
   height: 3em;
 }
 
+.langInfoContainer > a{
+  text-decoration: none;
+  margin-top: 5em;
+  color: black;
+}
+
+.flexContainer {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  min-height: 25em;
+}
+
+.flexContainer > button {
+  margin-left: 0 !important;
+  margin-bottom: 0 !important;
+  flex-basis: 30%;
+  margin: 0.5em;
+}
+
+.flexContainer > button:hover {
+  margin-left: 0 !important;
+  margin-bottom: 0 !important;
+  flex-basis: 30%;
+  margin: 0.5em;
+}
+
+.center {
+  text-align: center;
+}
 

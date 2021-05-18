@@ -16,7 +16,7 @@ import Lang from './Lang.svelte';
         
 </script>
     
-    <div id="innerApp">
+    <div id="innerApp" class="langInfoContainer">
         <h3>Please Select a Language</h3>
         {#if langList.length > 0}
         <div>
@@ -27,7 +27,7 @@ import Lang from './Lang.svelte';
             </select>
         </div>
 
-        <a href={selectedLang}>Select</a>
+        <a href={"lang/" + selectedLang}>Select</a>
 
         {:else}
             <p>Loading...</p>
