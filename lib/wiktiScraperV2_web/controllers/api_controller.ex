@@ -371,7 +371,8 @@ defmodule WiktiScraperV2Web.ApiController do
     wordData = wordInfoCreator(%{"lang" => lang, "word" => word})
 
     selected = Enum.map(selectors, fn s ->
-      selectKeys = String.split(s, ":")
+      selectedContent = case length(String.split(s, ":")) do
+      2 -> selectKeys = String.split(s, ":")
       {index1, _} = Integer.parse(Enum.at(selectKeys, 0))
       {index2, _} = Integer.parse(Enum.at(selectKeys, 1))
 
@@ -379,6 +380,39 @@ defmodule WiktiScraperV2Web.ApiController do
       content = Map.get(obj, :content)
       content = Enum.at(content, index2)
       content
+
+      4 -> selectKeys = String.split(s, ":")
+      {index1, _} = Integer.parse(Enum.at(selectKeys, 0))
+      {index2, _} = Integer.parse(Enum.at(selectKeys, 1))
+      {index3, _} = Integer.parse(Enum.at(selectKeys, 2))
+      {index4, _} = Integer.parse(Enum.at(selectKeys, 3))
+
+      obj = Enum.at(wordData, index1)
+      content = Map.get(obj, :content)
+      content = Enum.at(content, index2)
+      content = Map.get(content, :innerContent)
+      content = Enum.at(Enum.at(content, index3), index4)
+      content
+
+      5-> selectKeys = String.split(s, ":")
+      {index1, _} = Integer.parse(Enum.at(selectKeys, 0))
+      {index2, _} = Integer.parse(Enum.at(selectKeys, 1))
+      {index3, _} = Integer.parse(Enum.at(selectKeys, 2))
+      {index4, _} = Integer.parse(Enum.at(selectKeys, 3))
+      {index5, _} = Integer.parse(Enum.at(selectKeys, 4))
+
+      obj = Enum.at(wordData, index1)
+      content = Map.get(obj, :content)
+      content = Enum.at(content, index2)
+      content = Map.get(content, :innerContent)
+      content = Enum.at(content, index3)
+      content = Enum.at(content, index4)
+      content = Enum.at(content, index5)
+      content
+      end
+
+      selectedContent
+
     end)
 
     json(conn, selected)

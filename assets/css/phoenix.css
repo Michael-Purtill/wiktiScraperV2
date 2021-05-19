@@ -105,7 +105,7 @@ body {
   text-align: center;
 }
 
-.langInfoContainer > button , a{
+.langInfoContainer > button, a {
   text-align: center;
   border: none;
   background-color: #e0e1ff;
@@ -131,10 +131,14 @@ body {
   height: 3em;
 }
 
-.langInfoContainer > a{
+.langInfoContainer > a {
   text-decoration: none;
   margin-top: 5em;
   color: black;
+}
+
+.selected {
+  background-color: #ffbc70 !important;
 }
 
 .flexContainer {

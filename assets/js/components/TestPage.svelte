@@ -5,22 +5,26 @@
     
     let langInfo = [];
     let selectors = [];
+    let lang = decodeURI(window.location.pathname.split("/")[2]);
+    let word = window.location.pathname.split("/")[3];
 
     onMount(async () => {
-        let lang = window.location.pathname.split("/")[2];
-        let word = encodeURIComponent(window.location.pathname.split("/")[3]);
         console.log(lang, word);
 
         fetch("/api/wordInfo/" + `${lang}/${word}`).then((r) => {return r.json()}).then((d) => {langInfo = d })
     });
 
     function handleClick(e) {
-        if (_.includes(selectors, e.target.id)) {
-            selectors = _.filter(selectors, s => s != e.target.id)
+        var id = e.target.id;
+        if (e.target.localName == "li") {
+            id = e.target.parentElement.id;
+        }
+        if (_.includes(selectors, id)) {
+            selectors = _.filter(selectors, s => s != id)
         }
         else {
             let selectorsCopy = _.cloneDeep(selectors);
-            selectorsCopy.push(e.target.id);
+            selectorsCopy.push(id);
             selectors = selectorsCopy;
         }
     }
@@ -32,7 +36,7 @@
                 'Accept': 'application/json',
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({selectors: selectors, lang: "Czech", word: "pes"})
+            body: JSON.stringify({selectors: selectors, lang: lang, word: word})
             
          }).then((res) => console.log(res));
     }
@@ -45,9 +49,9 @@
             <h3>{datum.title.replaceAll("[ edit ]", "").replaceAll("[edit]", "").replaceAll("  ", " ").replaceAll(" ,", ",").replaceAll(" .", ".")}</h3>
             {#each datum.content as content, j}
                 {#if content.tag == "p"}
-                <p id={`${i}:${j}`} on:click={handleClick}>{content.innerContent.replaceAll("\n", "").replaceAll("  ", " ").replaceAll(" ,", ",").replaceAll(" .", ".")}</p>
+                <p id={`${i}:${j}`} class={_.includes(selectors, `${i}:${j}`) ? "selected" : null} on:click={handleClick}>{content.innerContent.replaceAll("\n", "").replaceAll("  ", " ").replaceAll(" ,", ",").replaceAll(" .", ".")}</p>
                 {:else if content.tag == "ul" || content.tag == "ol"}
-                <ul id={`${i}:${j}`} on:click={handleClick}>
+                <ul class={_.includes(selectors, `${i}:${j}`) ? "selected" : null} id={`${i}:${j}`} on:click={handleClick}>
                     {#each content.innerContent as innerContent}
                         <li>{innerContent.replaceAll("\n", "").replaceAll("  ", " ").replaceAll(" ,", ",").replaceAll(" .", ".")}</li>
                     {/each}
@@ -58,7 +62,7 @@
                         {#each content.innerContent as innerContent, k}
                             <tr>
                                 {#each innerContent as inner, l}
-                                    <td rowspan={inner.rowspan} colspan={inner.colspan} id={`${i}:${j}:${k}:${l}`} on:click={handleClick}>{inner.text.replaceAll("\n", "").replaceAll("  ", " ").replaceAll(" ,", ",").replaceAll(" .", ".")}</td>
+                                    <td class={_.includes(selectors, `${i}:${j}:${k}:${l}`) ? "selected" : null} rowspan={inner.rowspan} colspan={inner.colspan} id={`${i}:${j}:${k}:${l}`} on:click={handleClick}>{inner.text.replaceAll("\n", "").replaceAll("  ", " ").replaceAll(" ,", ",").replaceAll(" .", ".")}</td>
                                 {/each}
                             </tr>
                         {/each}
@@ -72,7 +76,7 @@
                                 {#each tableArr as trow, l}
                                     <tr>
                                         {#each trow as tcol, m}
-                                        <td id={`${i}:${j}:${k}:${l}:${m}`} rowspan={tcol.rowspan} colspan={tcol.colspan}>{tcol.text.replaceAll("\n", "").replaceAll("  ", " ").replaceAll(" ,", ",").replaceAll(" .", ".")}</td>
+                                        <td class={_.includes(selectors, `${i}:${j}:${k}:${l}:${m}`) ? "selected" : null} id={`${i}:${j}:${k}:${l}:${m}`} rowspan={tcol.rowspan} colspan={tcol.colspan} on:click={handleClick}>{tcol.text.replaceAll("\n", "").replaceAll("  ", " ").replaceAll(" ,", ",").replaceAll(" .", ".")}</td>
                                         {/each}
                                     </tr>
                                 {/each}
