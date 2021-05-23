@@ -1,5 +1,7 @@
 defmodule WiktiScraperV2Web.ApiController do
   use WiktiScraperV2Web, :controller
+  alias WiktiScraperV2.Repo
+  alias WiktiScraperV2.Template
 
   def langlist(conn, _params) do
     # HTTPoison.start
@@ -394,7 +396,7 @@ defmodule WiktiScraperV2Web.ApiController do
       content = Enum.at(Enum.at(content, index3), index4)
       content
 
-      5-> selectKeys = String.split(s, ":")
+      5 -> selectKeys = String.split(s, ":")
       {index1, _} = Integer.parse(Enum.at(selectKeys, 0))
       {index2, _} = Integer.parse(Enum.at(selectKeys, 1))
       {index3, _} = Integer.parse(Enum.at(selectKeys, 2))
@@ -416,6 +418,13 @@ defmodule WiktiScraperV2Web.ApiController do
     end)
 
     json(conn, selected)
+  end
+
+  def uploadTemplate(conn, %{"selectors" => selectors, "wikiLink" => wikiLink, "lang" => lang, "wordClass" => wordClass}) do
+    section = page2Section(wikiLink, lang)
+    content = scrubHtml(section)
+    Repo.insert(%Template{selectors: selectors, lang: lang, html: content, wordclass: wordClass})
+    json(conn, selectors)
   end
 
 end

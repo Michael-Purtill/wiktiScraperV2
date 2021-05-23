@@ -7,6 +7,7 @@
     let selectors = [];
     let lang = decodeURI(window.location.pathname.split("/")[2]);
     let word = window.location.pathname.split("/")[3];
+    let wikiLink = "https://en.wiktionary.org/wiki/" + word + "#" + lang;
     let fields = [];
 
     onMount(async () => {
@@ -43,8 +44,8 @@
          }).then((res) => console.log(res));
     }
 
-    function handleFieldChange(id) {
-        let val = document.getElementById("field" + id).value;
+    function handleFieldChange(id, e) {
+        let val = e.target.value;
         
         let fieldsClone = _.cloneDeep(fields);
         fieldsClone.push({id: id, val: val});
@@ -52,8 +53,16 @@
     }
 
     function submitSelectors() {
-        fields
-        debugger;
+        fields;
+        lang;
+        wikiLink;
+
+        fetch("/api/uploadTemplate", {
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            method: "POST", body: JSON.stringify({selectors: fields, wikiLink: wikiLink, lang: lang, wordClass: "Noun"})}).then(() => console.log("pray for me"));
     }
 
 </script>
@@ -107,7 +116,7 @@
         {#each selectors as s}
             <div class="fields">
                 <h4>{document.getElementById(s).innerText}</h4>
-                <input id={"field" + s} on:change={() => handleFieldChange(s)} type="text" placeholder="Field Name"/>
+                <input id={"field" + s} on:change={(e) => handleFieldChange(s, e)} type="text" placeholder="Field Name"/>
             </div>
         
         {/each}

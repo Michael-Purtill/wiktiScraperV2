@@ -29,6 +29,7 @@ defmodule WiktiScraperV2Web.Router do
     get "/testPage/:lang/:word", ApiController, :testPage
     get "/wordInfo/:lang/:word", ApiController, :wordInfo
     post "/testPageJsonHandler", ApiController, :testPageJsonHandler
+    post "/uploadTemplate", ApiController, :uploadTemplate
   end
 
   # Other scopes may use custom stacks.

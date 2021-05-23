@@ -5,7 +5,7 @@ defmodule WiktiScraperV2.Template do
   schema "template" do
     field :html, :string
     field :lang, :string
-    field :selectors, :map
+    field :selectors, {:array, :map}
     field :wordclass, :string
 
     timestamps()
