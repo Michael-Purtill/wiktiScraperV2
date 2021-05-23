@@ -7,6 +7,7 @@
     let selectors = [];
     let lang = decodeURI(window.location.pathname.split("/")[2]);
     let word = window.location.pathname.split("/")[3];
+    let fields = [];
 
     onMount(async () => {
         console.log(lang, word);
@@ -21,6 +22,7 @@
         }
         if (_.includes(selectors, id)) {
             selectors = _.filter(selectors, s => s != id)
+            fields = _.filter(fields, f => f.id != id);
         }
         else {
             let selectorsCopy = _.cloneDeep(selectors);
@@ -39,6 +41,19 @@
             body: JSON.stringify({selectors: selectors, lang: lang, word: word})
             
          }).then((res) => console.log(res));
+    }
+
+    function handleFieldChange(id) {
+        let val = document.getElementById("field" + id).value;
+        
+        let fieldsClone = _.cloneDeep(fields);
+        fieldsClone.push({id: id, val: val});
+        fields = fieldsClone;
+    }
+
+    function submitSelectors() {
+        fields
+        debugger;
     }
 
 </script>
@@ -87,8 +102,19 @@
             {/each}
         </div>
     {/each}
-    <div class="langInfoContainer"><button on:click={handleSubmit}>Submit</button></div>
     
+    <div class={(selectors.length > 0 ? "showDataSubber" : "hideDataSubber") + " langInfoContainer"}>
+        {#each selectors as s}
+            <div class="fields">
+                <h4>{document.getElementById(s).innerText}</h4>
+                <input id={"field" + s} on:change={() => handleFieldChange(s)} type="text" placeholder="Field Name"/>
+            </div>
+        
+        {/each}
+
+        <button on:click={submitSelectors}>Submit</button>
+
+    </div>
 </div>
 
 <style></style>
