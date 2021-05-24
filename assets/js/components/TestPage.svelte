@@ -8,6 +8,7 @@
     let lang = decodeURI(window.location.pathname.split("/")[2]);
     let word = window.location.pathname.split("/")[3];
     let wikiLink = "https://en.wiktionary.org/wiki/" + word + "#" + lang;
+    let wordClass = "";
     let fields = [];
 
     onMount(async () => {
@@ -62,7 +63,11 @@
                 'Accept': 'application/json',
                 'Content-Type': 'application/json'
             },
-            method: "POST", body: JSON.stringify({selectors: fields, wikiLink: wikiLink, lang: lang, wordClass: "Noun"})}).then(() => console.log("pray for me"));
+            method: "POST", body: JSON.stringify({selectors: fields, wikiLink: wikiLink, lang: lang, wordClass: wordClass})}).then(() => console.log("pray for me"));
+    }
+
+    function handleClassChange(e) {
+        wordClass = e.target.value;
     }
 
 </script>
@@ -113,6 +118,10 @@
     {/each}
     
     <div class={(selectors.length > 0 ? "showDataSubber" : "hideDataSubber") + " langInfoContainer"}>
+        <div class="fields">
+            <h3>Word Class</h3>
+            <input on:change={handleClassChange} type="text" placeholder="Word Class"/>
+        </div>
         {#each selectors as s}
             <div class="fields">
                 <h4>{document.getElementById(s).innerText}</h4>

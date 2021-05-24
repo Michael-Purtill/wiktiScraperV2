@@ -352,9 +352,10 @@ defmodule WiktiScraperV2Web.ApiController do
   end
 
   def testPage(conn, %{"lang" => lang, "word" => word}) do #a controller for testing new features during development
-    section = page2Section("https://en.wiktionary.org/wiki/" <> word, lang)
-    content = scrubHtml(section)
-    json(conn, %{:stuff => content})
+    looper(lang, word)
+    # section = page2Section("https://en.wiktionary.org/wiki/" <> word, lang)
+    # content = scrubHtml(section)
+    json(conn, "hi")
   end
 
   def wordInfo(conn, %{"lang" => lang, "word" => word}) do #probably will only be used during testing, get info for a single word in a language
@@ -425,6 +426,34 @@ defmodule WiktiScraperV2Web.ApiController do
     content = scrubHtml(section)
     Repo.insert(%Template{selectors: selectors, lang: lang, html: content, wordclass: wordClass})
     json(conn, selectors)
+  end
+
+  defp looper(lang, wordClass) do
+    categoryLink = "https://en.wiktionary.org/wiki/Category:" <> lang <> "_" <> wordClass <> "s"
+
+    langs = case HTTPoison.get(categoryLink) do
+      {:ok, %HTTPoison.Response{status_code: 200, body: body}} ->
+        {:ok, document} = Floki.parse_document(body)
+
+        categoryGroups = Enum.at(Floki.find(document, "#mw-pages"), 0)
+        categoryGroups = Floki.find(categoryGroups, ".mw-category-group")
+
+        listGroup = case length(categoryGroups) do
+          1 -> Enum.at(categoryGroups, 0)
+          _ -> Enum.at(categoryGroups, 1)
+        end
+
+        list = Enum.at(Floki.find(listGroup, "ul"), 0)
+
+        listLis = Floki.find(list, "li")
+
+        Enum.each(listLis, fn li ->
+          IO.puts Floki.text(li)
+        end)
+
+
+        end
+
   end
 
 end
