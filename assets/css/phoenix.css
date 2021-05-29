@@ -179,3 +179,20 @@ body {
 
 }
 
+.langInfoContainer > select {
+    border: none;
+    background-color: whitesmoke;
+    border-bottom: 0.1em solid black;
+    margin-bottom: 2em;
+    margin-top: 1em;
+    font-size: 1em;
+}
+
+.langInfoContainer > select:focus-visible {
+    outline: none;
+}
+
+.mainMenu > a {
+  padding: 0.1em !important;
+  box-shadow: 0.1em 0.1em 0.2em grey !important;
+}

@@ -16,16 +16,14 @@ import Lang from './Lang.svelte';
         
 </script>
     
-    <div id="innerApp" class="langInfoContainer">
+    <div id="innerApp" class="langInfoContainer mainMenu">
         <h3>Please Select a Language</h3>
         {#if langList.length > 0}
-        <div>
             <select on:change={handleLangSelect}>
                 {#each langList as lang}
                 <option value={lang}>{lang}</option>
                 {/each}
             </select>
-        </div>
 
         <a href={"lang/" + selectedLang}>Select</a>
 

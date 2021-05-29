@@ -2,6 +2,7 @@ defmodule WiktiScraperV2Web.ApiController do
   use WiktiScraperV2Web, :controller
   alias WiktiScraperV2.Repo
   alias WiktiScraperV2.Template
+  alias WiktiScraperV2.UnmatchedWord
 
   def langlist(conn, _params) do
     # HTTPoison.start
@@ -352,7 +353,7 @@ defmodule WiktiScraperV2Web.ApiController do
   end
 
   def testPage(conn, %{"lang" => lang, "word" => word}) do #a controller for testing new features during development
-    looper(lang, word)
+    # looper(lang, word)
     # section = page2Section("https://en.wiktionary.org/wiki/" <> word, lang)
     # content = scrubHtml(section)
     json(conn, "hi")
@@ -428,10 +429,11 @@ defmodule WiktiScraperV2Web.ApiController do
     json(conn, selectors)
   end
 
-  defp looper(lang, wordClass) do
+  defp buildUnmatched(lang, wordClass) do
     categoryLink = "https://en.wiktionary.org/wiki/Category:" <> lang <> "_" <> wordClass <> "s"
+    cappedClass = String.capitalize(wordClass)
 
-    langs = case HTTPoison.get(categoryLink) do
+    words = case HTTPoison.get(categoryLink) do
       {:ok, %HTTPoison.Response{status_code: 200, body: body}} ->
         {:ok, document} = Floki.parse_document(body)
 
@@ -448,12 +450,32 @@ defmodule WiktiScraperV2Web.ApiController do
         listLis = Floki.find(list, "li")
 
         Enum.each(listLis, fn li ->
-          IO.puts Floki.text(li)
+          link = Enum.at(Floki.find(li, "a"), 0)
+          link = Enum.at(Floki.attribute(link, "href"), 0)
+          link = "https://en.wiktionary.org" <> link
+
+          IO.puts(link)
+
+          section = page2Section(link, lang)
+          scrubbed = scrubHtml(section)
+
+          IO.puts(lang)
+          IO.puts(cappedClass)
+          IO.puts(scrubbed)
+
+          Repo.insert(%UnmatchedWord{lang: lang, pos: cappedClass, html: scrubbed})
         end)
 
+        "success"
 
+        _ -> IO.puts "error"
         end
+  end
 
+  def initUnmatched(conn, %{"lang" => lang, "wordClass" => wordClass}) do
+    buildUnmatched(lang, wordClass)
+
+    json(conn, "hi")
   end
 
 end

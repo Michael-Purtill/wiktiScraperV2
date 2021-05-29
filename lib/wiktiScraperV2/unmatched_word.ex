@@ -1,4 +1,4 @@
-defmodule WiktiScraperV2.UmatchedWord do
+defmodule WiktiScraperV2.UnmatchedWord do
   use Ecto.Schema
   import Ecto.Changeset
 
