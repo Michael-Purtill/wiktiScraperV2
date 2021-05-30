@@ -3,6 +3,7 @@ defmodule WiktiScraperV2Web.ApiController do
   alias WiktiScraperV2.Repo
   alias WiktiScraperV2.Template
   alias WiktiScraperV2.UnmatchedWord
+  import Ecto.Query
 
   def langlist(conn, _params) do
     # HTTPoison.start
@@ -460,7 +461,11 @@ defmodule WiktiScraperV2Web.ApiController do
           # IO.puts Floki.text(li)
           # IO.puts scrubbed
 
-          Repo.insert(%UnmatchedWord{lang: lang, pos: cappedClass, html: scrubbed, link: link})
+          dbMatches = Repo.all(from u in UnmatchedWord, where: u.html == ^scrubbed and u.lang == ^lang and u.pos == ^cappedClass and u.link == ^link, select: u.link)
+          case length(dbMatches) do
+            0 -> Repo.insert(%UnmatchedWord{lang: lang, pos: cappedClass, html: scrubbed, link: link})
+            _ -> IO.puts "matches found"
+          end
         end)
 
         filteredLinks = Enum.filter(links, fn l -> Floki.text(l) == "next page" end)
@@ -510,7 +515,11 @@ defmodule WiktiScraperV2Web.ApiController do
           # IO.puts Floki.text(li)
           # IO.puts scrubbed
 
-          Repo.insert(%UnmatchedWord{lang: lang, pos: cappedClass, html: scrubbed, link: link})
+          dbMatches = Repo.all(from u in UnmatchedWord, where: u.html == ^scrubbed and u.lang == ^lang and u.pos == ^cappedClass and u.link == ^link )
+          case length(dbMatches) do
+            0 -> Repo.insert(%UnmatchedWord{lang: lang, pos: cappedClass, html: scrubbed, link: link})
+            _ -> IO.puts "matches found"
+          end
         end)
 
         filteredLinks = Enum.filter(links, fn l -> Floki.text(l) == "next page" end)

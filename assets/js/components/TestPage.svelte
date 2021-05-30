@@ -73,6 +73,7 @@
 </script>
 
 <div>
+    <a class="wikiLink" href={wikiLink} target="_blank">View on Wiktionary</a>
     {#each langInfo as datum, i}
         <div class="langInfoContainer">
             <h3>{datum.title.replaceAll("[ edit ]", "").replaceAll("[edit]", "").replaceAll("  ", " ").replaceAll(" ,", ",").replaceAll(" .", ".")}</h3>
