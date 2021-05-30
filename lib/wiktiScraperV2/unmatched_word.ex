@@ -6,6 +6,7 @@ defmodule WiktiScraperV2.UnmatchedWord do
     field :html, :string
     field :lang, :string
     field :pos, :string
+    field :link, :string
 
     timestamps()
   end
