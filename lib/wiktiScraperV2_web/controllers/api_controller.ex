@@ -156,7 +156,7 @@ defmodule WiktiScraperV2Web.ApiController do
         case elem(s, 0) do
           "p" -> %{:tag => "p", :innerContent => Floki.text(s, sep: " ")}
           x when x in ["ol", "ul"] -> %{:tag => x, :innerContent => Enum.map(Floki.children(s), fn li -> Floki.text(li, sep: " ") end)}
-          "div" -> case Floki.find(s, ".wikitable") do
+          "div" -> case Floki.find(s, "table") do
             [] -> %{:tag => elem(s, 0), :innerContent => "filter me out"}
             [table] ->
               thead = Floki.find(table, "thead")
@@ -219,7 +219,7 @@ defmodule WiktiScraperV2Web.ApiController do
       case elem(tag, 0) do
         x when x in ["h1", "h2", "h3", "h4", "h5", "h6"] -> "<" <> x <> ">" <> Floki.text(tag) <> "</" <> x <> ">"
         x when x in ["ul", "ol", "p", "span"] -> "<" <> x <> ">" <> "</" <> x <> ">"
-        "div" -> case Floki.find(tag, ".wikitable") do
+        "div" -> case Floki.find(tag, "table") do
           [] -> ""
           [table] ->
             thead = Floki.find(table, "thead")
@@ -354,9 +354,9 @@ defmodule WiktiScraperV2Web.ApiController do
 
   def testPage(conn, %{"lang" => lang, "word" => word}) do #a controller for testing new features during development
     # looper(lang, word)
-    # section = page2Section("https://en.wiktionary.org/wiki/" <> word, lang)
-    # content = scrubHtml(section)
-    json(conn, "hi")
+    section = page2Section("https://en.wiktionary.org/wiki/" <> word, lang)
+    content = scrubHtml(section)
+    json(conn, content)
   end
 
   def wordInfo(conn, %{"lang" => lang, "word" => word}) do #probably will only be used during testing, get info for a single word in a language
@@ -457,10 +457,10 @@ defmodule WiktiScraperV2Web.ApiController do
           scrubbed = scrubHtml(section)
 
           # IO.puts lang
-          IO.puts Floki.text(li)
+          # IO.puts Floki.text(li)
           # IO.puts scrubbed
 
-          # Repo.insert(%UnmatchedWord{lang: lang, pos: cappedClass, html: scrubbed})
+          Repo.insert(%UnmatchedWord{lang: lang, pos: cappedClass, html: scrubbed, link: link})
         end)
 
         filteredLinks = Enum.filter(links, fn l -> Floki.text(l) == "next page" end)
@@ -507,10 +507,10 @@ defmodule WiktiScraperV2Web.ApiController do
           scrubbed = scrubHtml(section)
 
           # IO.puts lang
-          IO.puts Floki.text(li)
+          # IO.puts Floki.text(li)
           # IO.puts scrubbed
 
-          # Repo.insert(%UnmatchedWord{lang: lang, pos: cappedClass, html: scrubbed})
+          Repo.insert(%UnmatchedWord{lang: lang, pos: cappedClass, html: scrubbed, link: link})
         end)
 
         filteredLinks = Enum.filter(links, fn l -> Floki.text(l) == "next page" end)
