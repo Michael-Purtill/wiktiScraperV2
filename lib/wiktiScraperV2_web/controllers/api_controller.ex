@@ -440,32 +440,92 @@ defmodule WiktiScraperV2Web.ApiController do
         categoryGroups = Enum.at(Floki.find(document, "#mw-pages"), 0)
         categoryGroups = Floki.find(categoryGroups, ".mw-category-group")
 
-        listGroup = case length(categoryGroups) do
-          1 -> Enum.at(categoryGroups, 0)
-          _ -> Enum.at(categoryGroups, 1)
-        end
+        mwPages = Enum.at(Floki.find(document, "#mw-pages"), 0)
+        links = Floki.find(mwPages, "a")
 
-        list = Enum.at(Floki.find(listGroup, "ul"), 0)
-
-        listLis = Floki.find(list, "li")
+        listLis = Enum.flat_map(categoryGroups, fn g ->
+          lis = Enum.filter(Floki.find(g, "li"), fn l -> String.contains?(Floki.text(l), "Appendix:") != true end)
+        end)
 
         Enum.each(listLis, fn li ->
           link = Enum.at(Floki.find(li, "a"), 0)
           link = Enum.at(Floki.attribute(link, "href"), 0)
           link = "https://en.wiktionary.org" <> link
 
-          IO.puts(link)
-
           section = page2Section(link, lang)
+
           scrubbed = scrubHtml(section)
 
-          IO.puts(lang)
-          IO.puts(cappedClass)
-          IO.puts(scrubbed)
+          # IO.puts lang
+          IO.puts Floki.text(li)
+          # IO.puts scrubbed
 
-          Repo.insert(%UnmatchedWord{lang: lang, pos: cappedClass, html: scrubbed})
+          # Repo.insert(%UnmatchedWord{lang: lang, pos: cappedClass, html: scrubbed})
         end)
 
+        filteredLinks = Enum.filter(links, fn l -> Floki.text(l) == "next page" end)
+
+        nextPageLink = case length(filteredLinks) do
+          0 -> "not found"
+          _ -> "https://en.wiktionary.org" <> Enum.at(Floki.attribute(Enum.at(filteredLinks, 0), "href"), 0)
+        end
+
+        case nextPageLink do
+          "not found" -> nil
+          _ -> recursiveBuildHelper(nextPageLink, cappedClass, lang)
+        end
+
+        "success"
+
+        _ -> IO.puts "error"
+        end
+  end
+
+  defp recursiveBuildHelper(categoryLink, cappedClass, lang) do
+    words = case HTTPoison.get(categoryLink) do
+      {:ok, %HTTPoison.Response{status_code: 200, body: body}} ->
+        {:ok, document} = Floki.parse_document(body)
+
+        categoryGroups = Enum.at(Floki.find(document, "#mw-pages"), 0)
+        categoryGroups = Floki.find(categoryGroups, ".mw-category-group")
+
+
+        mwPages = Enum.at(Floki.find(document, "#mw-pages"), 0)
+        links = Floki.find(mwPages, "a")
+
+        listLis = Enum.flat_map(categoryGroups, fn g ->
+          lis = Enum.filter(Floki.find(g, "li"), fn l -> String.contains?(Floki.text(l), "Appendix:") != true end)
+        end)
+
+        Enum.each(listLis, fn li ->
+          link = Enum.at(Floki.find(li, "a"), 0)
+          link = Enum.at(Floki.attribute(link, "href"), 0)
+          link = "https://en.wiktionary.org" <> link
+
+          section = page2Section(link, lang)
+
+          scrubbed = scrubHtml(section)
+
+          # IO.puts lang
+          IO.puts Floki.text(li)
+          # IO.puts scrubbed
+
+          # Repo.insert(%UnmatchedWord{lang: lang, pos: cappedClass, html: scrubbed})
+        end)
+
+        filteredLinks = Enum.filter(links, fn l -> Floki.text(l) == "next page" end)
+
+        nextPageLink = case length(filteredLinks) do
+          0 -> "not found"
+          _ -> "https://en.wiktionary.org" <> Enum.at(Floki.attribute(Enum.at(filteredLinks, 0), "href"), 0)
+        end
+
+        IO.puts nextPageLink
+
+        case nextPageLink do
+          "not found" -> nil
+          _ -> recursiveBuildHelper(nextPageLink, cappedClass, lang)
+        end
         "success"
 
         _ -> IO.puts "error"
