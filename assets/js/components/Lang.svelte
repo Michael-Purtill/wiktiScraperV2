@@ -17,15 +17,23 @@
         fetch(`/api/initUnmatched/${lang}/${wordClass}`, {method: "POST"});
     }
 
+    function goToUnmatched(cat) {
+        let lang = cat.split("_")[0];
+        let wordClass = cat.split("_")[1];
+        const regexp = /s$/ig;
+        wordClass = wordClass.replaceAll(regexp, "");
+        window.location.href = `/unmatched/${lang}/${wordClass}`;
+    }
+
 </script>
 
 <div>
     <h2 class="center">{window.location.pathname.split("/")[2]}</h2>
-<div class="langInfoContainer flexContainer">
-    {#each posLinks as link}
-        <button on:click={() => handlePos(link.split("Category:")[1])}>{link.split("Category:")[1].replaceAll("_", " ")}</button>
-    {/each}
-</div>
+    <div class="langInfoContainer flexContainer">
+        {#each posLinks as link}
+            <button on:click={() => goToUnmatched(link.split("Category:")[1])}>{link.split("Category:")[1].replaceAll("_", " ")}</button>
+        {/each}
+    </div>
 </div>
 
 <style></style>

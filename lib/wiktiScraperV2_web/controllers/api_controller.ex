@@ -426,7 +426,9 @@ defmodule WiktiScraperV2Web.ApiController do
   def uploadTemplate(conn, %{"selectors" => selectors, "wikiLink" => wikiLink, "lang" => lang, "wordClass" => wordClass}) do
     section = page2Section(wikiLink, lang)
     content = scrubHtml(section)
+    cappedClass = String.capitalize(wordClass)
     Repo.insert(%Template{selectors: selectors, lang: lang, html: content, wordclass: wordClass})
+    Repo.update_all(from(u in UnmatchedWord, where: u.html == ^content and u.lang == ^lang and u.pos == ^cappedClass), set: [matched: true])
     json(conn, selectors)
   end
 
@@ -545,6 +547,12 @@ defmodule WiktiScraperV2Web.ApiController do
     buildUnmatched(lang, wordClass)
 
     json(conn, "hi")
+  end
+
+  def getUnmatched(conn, %{"lang" => lang, "wordClass" => wordClass}) do
+    wordClass = String.capitalize(wordClass)
+    dbMatches = Repo.all(from u in UnmatchedWord, where: u.lang == ^lang and u.pos == ^wordClass, select: u.link)
+    json(conn, dbMatches)
   end
 
 end

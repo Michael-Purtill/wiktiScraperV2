@@ -207,3 +207,24 @@ a.wikiLink {
   text-decoration: none;
   color: black;
 }
+
+.unmatchedList {
+  text-align: center;
+}
+
+.unmatchedList > button {
+    display: block;
+    width: 50%;
+    background-color: #e0e1ff;
+    border: none;
+    border-bottom: 1px solid black;
+    margin-left: auto;
+    margin-right: auto;
+    font-size: 1.2em;
+}
+
+.unmatchedList > button:hover {
+  background-color: #ffbc70;
+  cursor: pointer;
+}
+

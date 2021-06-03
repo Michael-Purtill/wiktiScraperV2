@@ -7,6 +7,7 @@ defmodule WiktiScraperV2.UnmatchedWord do
     field :lang, :string
     field :pos, :string
     field :link, :string
+    field :matched, :boolean
 
     timestamps()
   end
@@ -14,7 +15,7 @@ defmodule WiktiScraperV2.UnmatchedWord do
   @doc false
   def changeset(umatched_word, attrs) do
     umatched_word
-    |> cast(attrs, [:lang, :pos, :html])
-    |> validate_required([:lang, :pos, :html])
+    |> cast(attrs, [:lang, :pos, :html, :link, :matched])
+    |> validate_required([:lang, :pos, :html, :link, :matched])
   end
 end
