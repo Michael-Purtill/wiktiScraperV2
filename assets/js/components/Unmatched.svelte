@@ -20,14 +20,21 @@
         fetch(`/api/initUnmatched/${lang}/${wordClass}`, {method: "POST"});
     }
 
+    function generateDefs() {
+        const regexp = /s$/ig;
+        wordClass = wordClass.replaceAll(regexp, "");
+        fetch(`/api/buildWords/${lang}/${wordClass}`);
+    }
+
 </script>
 
 <div>
     <h2 class="center">Unmatched {window.location.pathname.split("/")[2] + " " + window.location.pathname.split("/")[3]}s</h2>
     <button on:click={initUnmatched}>Initialize Unmatched List</button>
+    <button on:click={generateDefs}>Generate Definitions</button>
     <div class="unmatchedList">
         {#each links as link}
-            <button on:click={() => {openTemplateBuilder(decodeURI(link.split("/")[4]))}}>{decodeURI(link.split("/")[4])}</button>
+            <button on:click={() => {openTemplateBuilder(decodeURI(link.split("/")[4]))}}>{decodeURI(link.split("/")[4].replaceAll("_", " "))}</button>
         {/each}
     </div>
 </div>
