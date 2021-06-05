@@ -5,6 +5,8 @@ defmodule WiktiScraperV2.Word do
   schema "word" do
     field :data, :map
     field :lang, :string
+    field :wordClass, :string
+    field :word, :string
 
     timestamps()
   end

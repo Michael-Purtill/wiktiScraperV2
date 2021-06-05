@@ -3,6 +3,7 @@ defmodule WiktiScraperV2Web.ApiController do
   alias WiktiScraperV2.Repo
   alias WiktiScraperV2.Template
   alias WiktiScraperV2.UnmatchedWord
+  alias WiktiScraperV2.Word
   import Ecto.Query
 
   def langlist(conn, _params) do
@@ -553,6 +554,81 @@ defmodule WiktiScraperV2Web.ApiController do
     wordClass = String.capitalize(wordClass)
     dbMatches = Repo.all(from u in UnmatchedWord, where: u.lang == ^lang and u.pos == ^wordClass and u.matched == false, select: u.link)
     json(conn, dbMatches)
+  end
+
+  def buildWords(conn, %{"lang" => lang, "wordClass" => wordClass}) do
+    wordClass = String.capitalize(wordClass)
+    templates = Repo.all(from t in Template, where: t.lang == ^lang and t.wordclass == ^wordClass)
+
+    Enum.each(templates, fn t ->
+      html = Map.get(t, :html)
+      selectors = Map.get(t, :selectors)
+
+      unmatched = Repo.all(from u in UnmatchedWord, where: u.lang == ^lang and u.pos == ^wordClass and u.matched == true and u.html == ^html, select: u.link)
+
+      Enum.each(unmatched, fn u ->
+        section = page2Section(u, lang)
+        wordData = section2Content(section)
+        wordString = Enum.at(String.split(u, "/"), 4)
+        wordString = URI.decode(wordString)
+        dataObject = Enum.map(selectors, fn s ->
+          # IO.puts String.split(Map.get(s, "id"), ":")
+          selectedContent = case length(String.split(Map.get(s, "id"), ":")) do
+            2 -> selectKeys = String.split(Map.get(s, "id"), ":")
+            {index1, _} = Integer.parse(Enum.at(selectKeys, 0))
+            {index2, _} = Integer.parse(Enum.at(selectKeys, 1))
+
+            obj = Enum.at(wordData, index1)
+            content = Map.get(obj, :content)
+            content = Enum.at(content, index2)
+            %{Map.get(s, "val") => content}
+
+            4 -> selectKeys = String.split(Map.get(s, "id"), ":")
+            {index1, _} = Integer.parse(Enum.at(selectKeys, 0))
+            {index2, _} = Integer.parse(Enum.at(selectKeys, 1))
+            {index3, _} = Integer.parse(Enum.at(selectKeys, 2))
+            {index4, _} = Integer.parse(Enum.at(selectKeys, 3))
+
+            obj = Enum.at(wordData, index1)
+            content = Map.get(obj, :content)
+            content = Enum.at(content, index2)
+            content = Map.get(content, :innerContent)
+            content = Enum.at(Enum.at(content, index3), index4)
+            %{Map.get(s, "val") => content}
+
+
+            5 -> selectKeys = String.split(Map.get(s, "id"), ":")
+            {index1, _} = Integer.parse(Enum.at(selectKeys, 0))
+            {index2, _} = Integer.parse(Enum.at(selectKeys, 1))
+            {index3, _} = Integer.parse(Enum.at(selectKeys, 2))
+            {index4, _} = Integer.parse(Enum.at(selectKeys, 3))
+            {index5, _} = Integer.parse(Enum.at(selectKeys, 4))
+
+            obj = Enum.at(wordData, index1)
+            content = Map.get(obj, :content)
+            content = Enum.at(content, index2)
+            content = Map.get(content, :innerContent)
+            content = Enum.at(content, index3)
+            content = Enum.at(content, index4)
+            content = Enum.at(content, index5)
+            %{Map.get(s, "val") => content}
+            end
+
+            selectedContent
+        end)
+        accMap = %{}
+        dataObject = Enum.reduce(dataObject, accMap, fn (map, acc) -> Map.merge(map, acc) end)
+        dbMatches = Repo.all(from w in Word, where: w.word == ^wordString and w.lang == ^lang and w.wordClass == ^wordClass)
+
+        case length(dbMatches) do
+          0 -> Repo.insert(%Word{data: dataObject, lang: lang, wordClass: wordClass, word: wordString})
+          _ -> IO.puts "matches found"
+        end
+
+        # IO.puts dataObject
+      end)
+    end)
+    json(conn, "hello")
   end
 
 end
