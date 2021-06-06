@@ -441,7 +441,7 @@ defmodule WiktiScraperV2Web.ApiController do
     section = page2Section(wikiLink, lang)
     content = scrubHtml(section)
     cappedClass = String.capitalize(wordClass)
-    Repo.insert(%Template{selectors: selectors, lang: lang, html: content, wordclass: wordClass})
+    Repo.insert(%Template{selectors: selectors, lang: lang, html: content, wordclass: cappedClass})
     Repo.update_all(from(u in UnmatchedWord, where: u.html == ^content and u.lang == ^lang and u.pos == ^cappedClass), set: [matched: true])
     json(conn, selectors)
   end
