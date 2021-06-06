@@ -110,8 +110,8 @@ defmodule WiktiScraperV2Web.ApiController do
           endIndex
         end
 
-        IO.puts startIndex
-        IO.puts endIndex
+        # IO.puts startIndex
+        # IO.puts endIndex
 
         sectionArray = Enum.map(startIndex..endIndex, fn i -> Floki.raw_html(Enum.at(pageContent, i)) end)
 
@@ -163,12 +163,13 @@ defmodule WiktiScraperV2Web.ApiController do
           x when x in ["ol", "ul"] -> %{:tag => x, :innerContent => Enum.map(Floki.children(s), fn li -> Floki.text(li, sep: " ") end)}
           "div" -> case Floki.find(s, "table") do
             [] -> case Floki.find(s, "ul") do
+              [ul] -> %{:tag => "ul", :innerContent => Enum.map(Floki.children(ul), fn li -> Floki.text(li, sep: " ") end)}
               [] -> case Floki.find(s, "ol") do
                 [ol] -> %{:tag => "ul", :innerContent => Enum.map(Floki.children(ol), fn li -> Floki.text(li, sep: " ") end)}
                 [] -> %{:tag => elem(s, 0), :innerContent => "filter me out"}
+                _ -> %{:tag => elem(s, 0), :innerContent => "filter me out"}
               end
-
-              [ul] -> %{:tag => "ul", :innerContent => Enum.map(Floki.children(ul), fn li -> Floki.text(li, sep: " ") end)}
+              _ -> %{:tag => elem(s, 0), :innerContent => "filter me out"}
             end
             [table] ->
               thead = Floki.find(table, "thead")
