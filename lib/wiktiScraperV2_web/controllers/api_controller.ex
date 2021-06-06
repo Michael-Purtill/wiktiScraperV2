@@ -105,10 +105,13 @@ defmodule WiktiScraperV2Web.ApiController do
         endIndex = endIndex - 1
 
         endIndex = if noEnd == true do
-          length(pageContent) - startIndex - 1
+          length(pageContent) - 1
         else
           endIndex
         end
+
+        IO.puts startIndex
+        IO.puts endIndex
 
         sectionArray = Enum.map(startIndex..endIndex, fn i -> Floki.raw_html(Enum.at(pageContent, i)) end)
 
@@ -370,7 +373,7 @@ defmodule WiktiScraperV2Web.ApiController do
   def testPage(conn, %{"lang" => lang, "word" => word}) do #a controller for testing new features during development
     # looper(lang, word)
     section = page2Section("https://en.wiktionary.org/wiki/" <> word, lang)
-    content = scrubHtml(section)
+    content = section2Content(section)
     json(conn, content)
   end
 
