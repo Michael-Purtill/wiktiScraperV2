@@ -3,7 +3,7 @@
     import { onMount } from 'svelte';
     
     let lang = window.location.pathname.split("/")[2];
-    let wordClass =window.location.pathname.split("/")[3];
+    let wordClass = window.location.pathname.split("/")[3];
     let links = [];
 
     onMount(async () => {
@@ -11,7 +11,7 @@
     })
 
     function openTemplateBuilder(link) {
-        window.open(`/testPage/${lang}/${link}`);
+        window.open(`/testPage/${lang}/${link}/${wordClass}`);
     }
 
     function initUnmatched() {

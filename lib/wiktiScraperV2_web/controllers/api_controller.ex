@@ -160,7 +160,11 @@ defmodule WiktiScraperV2Web.ApiController do
           x when x in ["ol", "ul"] -> %{:tag => x, :innerContent => Enum.map(Floki.children(s), fn li -> Floki.text(li, sep: " ") end)}
           "div" -> case Floki.find(s, "table") do
             [] -> case Floki.find(s, "ul") do
-              [] ->  %{:tag => elem(s, 0), :innerContent => "filter me out"}
+              [] -> case Floki.find(s, "ol") do
+                [ol] -> %{:tag => "ul", :innerContent => Enum.map(Floki.children(ol), fn li -> Floki.text(li, sep: " ") end)}
+                [] -> %{:tag => elem(s, 0), :innerContent => "filter me out"}
+              end
+
               [ul] -> %{:tag => "ul", :innerContent => Enum.map(Floki.children(ul), fn li -> Floki.text(li, sep: " ") end)}
             end
             [table] ->
@@ -227,7 +231,10 @@ defmodule WiktiScraperV2Web.ApiController do
         "div" -> case Floki.find(tag, "table") do
           [] -> case Floki.find(tag, "ul") do
             ul -> "<ul></ul>"
-            [] -> ""
+            [] -> case Floki.find(tag, "ol") do
+              ol -> "<ol></ol>"
+              [] -> ""
+            end
           end
           [table] ->
             thead = Floki.find(table, "thead")

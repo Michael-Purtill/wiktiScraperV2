@@ -18,7 +18,7 @@ defmodule WiktiScraperV2Web.Router do
 
     get "/", PageController, :index
     get "/lang/:lang", PageController, :lang
-    get "/testPage/:lang/:word", PageController, :testpage
+    get "/testPage/:lang/:word/:wordClass", PageController, :testpage
     get "/unmatched/:lang/:wordClass", PageController, :unmatched
   end
 
