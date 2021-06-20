@@ -496,7 +496,9 @@ defmodule WiktiScraperV2Web.ApiController do
         end
 
         case nextPageLink do
-          "not found" -> nil
+          "not found" ->
+            IO.puts "not found"
+            nil
           _ -> recursiveBuildHelper(nextPageLink, cappedClass, lang)
         end
 
@@ -575,6 +577,12 @@ defmodule WiktiScraperV2Web.ApiController do
   end
 
   def buildWords(conn, %{"lang" => lang, "wordClass" => wordClass}) do
+    Task.async(fn -> buildWordsMain(lang, wordClass) end)
+
+    json(conn, "Ran buildWords with lang " <> lang <> " and word class " <> wordClass)
+  end
+
+  defp buildWordsMain(lang, wordClass) do
     wordClass = String.capitalize(wordClass)
     templates = Repo.all(from t in Template, where: t.lang == ^lang and t.wordclass == ^wordClass)
 
@@ -646,7 +654,7 @@ defmodule WiktiScraperV2Web.ApiController do
         # IO.puts dataObject
       end)
     end)
-    json(conn, "hello")
+
   end
 
 end
