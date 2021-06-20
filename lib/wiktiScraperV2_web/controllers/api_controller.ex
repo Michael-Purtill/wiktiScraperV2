@@ -562,7 +562,8 @@ defmodule WiktiScraperV2Web.ApiController do
   end
 
   def initUnmatched(conn, %{"lang" => lang, "wordClass" => wordClass}) do
-    buildUnmatched(lang, wordClass)
+
+    Task.async(fn -> buildUnmatched(lang, wordClass) end)
 
     json(conn, "hi")
   end
