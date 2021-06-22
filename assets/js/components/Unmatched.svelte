@@ -7,7 +7,12 @@
     let links = [];
 
     onMount(async () => {
-        fetch(`/api/unmatched/${lang}/${wordClass}`).then((r) => {return r.json()}).then((d) => {links = d });
+        fetch(`/api/unmatched/${lang}/${wordClass}`).then((r) => {return r.json()}).then((d) => {
+            var data = _.groupBy(d, function(datum) {return datum[1]});
+            var arr = Object.values(data);
+            arr = _.reverse(_.sortBy(arr, function(a) {return a.length}));
+            arr = _.map(arr, function(a) {return a[0][0]});
+            links = arr });
     })
 
     function openTemplateBuilder(link) {

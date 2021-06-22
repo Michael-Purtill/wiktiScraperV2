@@ -572,7 +572,7 @@ defmodule WiktiScraperV2Web.ApiController do
 
   def getUnmatched(conn, %{"lang" => lang, "wordClass" => wordClass}) do
     wordClass = String.capitalize(wordClass)
-    dbMatches = Repo.all(from u in UnmatchedWord, where: u.lang == ^lang and u.pos == ^wordClass and u.matched == false, select: u.link)
+    dbMatches = Repo.all(from u in UnmatchedWord, where: u.lang == ^lang and u.pos == ^wordClass and u.matched == false, select: [u.link, u.html])
     json(conn, dbMatches)
   end
 
