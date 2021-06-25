@@ -20,7 +20,7 @@ Generate unmatched words - scrapes each word in the lemma into an unitialized fo
 
 Choose a word - words in this lemma with like-HTML structures are hidden and will have your changes applied to them as well:
 
-![image](https://user-images.githubusercontent.com/8331627/123489411-e7e68680-d5df-11eb-99b3-fd76916ccf0d.png)
+![image](https://user-images.githubusercontent.com/8331627/123489671-78bd6200-d5e0-11eb-86ec-b62b5fbfbf8e.png)
 
 Define structure - choose which elements from the page to store in the database, giving them your desired name:
 
