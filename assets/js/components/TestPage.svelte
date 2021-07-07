@@ -34,6 +34,7 @@
     }
 
     function handleSubmit() {
+        debugger;
         fetch("/api/testPageJsonHandler", {
             method: "POST",
             headers: {

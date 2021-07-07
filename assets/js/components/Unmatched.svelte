@@ -16,6 +16,9 @@
     })
 
     function openTemplateBuilder(link) {
+        // debugger;
+    
+        links = _.filter(links, (l) => l != "https://en.wiktionary.org/wiki/" + encodeURI(link));
         window.open(`/testPage/${lang}/${link}/${wordClass}`);
     }
 
