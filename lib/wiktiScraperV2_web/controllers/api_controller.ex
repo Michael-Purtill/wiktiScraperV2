@@ -91,6 +91,11 @@ defmodule WiktiScraperV2Web.ApiController do
         end)
 
         startIndex = Enum.find_index(indexes, fn i -> i == 1 end)
+
+        startIndex = case startIndex do
+          nil -> 0
+          x -> x
+        end
         endIndex = Enum.find_index(Enum.slice(indexes, startIndex, length(indexes)), fn i -> i == -1 end)
 
         noEnd = endIndex == nil
@@ -227,6 +232,11 @@ defmodule WiktiScraperV2Web.ApiController do
   defp scrubHtml(html) do #gets rid of all particular data in an html section and returns a scrubbed html with only important content
     {:ok, document} = Floki.parse_fragment(html)
     pageContent = Floki.children(Enum.at(Floki.find(document, "div"), 0))
+
+    pageContent = case pageContent do
+      nil -> []
+      x -> x
+    end
 
     scrubbedHtml = Enum.join(Enum.map(pageContent, fn tag ->
       case elem(tag, 0) do

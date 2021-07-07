@@ -126,7 +126,7 @@
         {#each selectors as s}
             <div class="fields">
                 <h4>{document.getElementById(s).innerText}</h4>
-                <input id={"field" + s} on:change={(e) => handleFieldChange(s, e)} type="text" placeholder="Field Name"/>
+                <input id={"field" + s} on:change={(e) => handleFieldChange(s, e)} type="text" placeholder="Field Name" value={document.getElementById(s).id.split(":").length == 4 ? document.getElementById(s).parentElement.children[0].innerText + "_" + document.getElementById(s).parentElement.parentElement.children[0].children[document.getElementById(s).id.split(":")[3]].innerText : ""} />
             </div>
         
         {/each}
