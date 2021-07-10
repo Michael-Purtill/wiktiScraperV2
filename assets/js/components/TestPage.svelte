@@ -50,7 +50,16 @@
         let val = e.target.value;
         
         let fieldsClone = _.cloneDeep(fields);
-        fieldsClone.push({id: id, val: val});
+
+        var idIndex = _.findIndex(fields, function(f) {return f.id == id});
+
+        if (idIndex == -1) {
+            fieldsClone.push({id: id, val: val});
+        }
+        else {
+            fieldsClone[idIndex] = {id: id, val: val};
+        }
+
         fields = fieldsClone;
     }
 
@@ -69,6 +78,12 @@
 
     function handleClassChange(e) {
         wordClass = e.target.value;
+    }
+
+    function handleKeyPress(e) {
+        if (e.keyCode == 13) {
+            submitSelectors();
+        }
     }
 
 </script>
@@ -127,7 +142,7 @@
         {#each selectors as s}
             <div class="fields">
                 <h4>{document.getElementById(s).innerText}</h4>
-                <input id={"field" + s} on:change={(e) => handleFieldChange(s, e)} type="text" placeholder="Field Name" value={document.getElementById(s).id.split(":").length == 4 ? document.getElementById(s).parentElement.children[0].innerText + "_" + document.getElementById(s).parentElement.parentElement.children[0].children[document.getElementById(s).id.split(":")[3]].innerText : ""} />
+                <input id={"field" + s} on:keypress={handleKeyPress} on:keyup={(e) => handleFieldChange(s, e)} type="text" placeholder="Field Name" value={document.getElementById(s).id.split(":").length == 4 ? document.getElementById(s).parentElement.children[0].innerText + "_" + document.getElementById(s).parentElement.parentElement.children[0].children[document.getElementById(s).id.split(":")[3]].innerText : ""} />
             </div>
         
         {/each}
