@@ -667,4 +667,10 @@ defmodule WiktiScraperV2Web.ApiController do
 
   end
 
+  def getDef(conn, %{"lang" => lang, "word" => word}) do
+    dbMatches = Repo.all(from u in Word, where: u.lang == ^lang and u.word == ^word, select: u.data)
+
+    json(conn, dbMatches)
+  end
+
 end

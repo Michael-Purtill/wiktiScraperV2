@@ -18,6 +18,7 @@ import App from "./components/App.svelte";
 import Lang from "./components/Lang.svelte";
 import TestPage from "./components/TestPage.svelte";
 import Unmatched from "./components/Unmatched.svelte";
+import Dict from "./components/Dict.svelte";
 
 
 var target = document.querySelector("#app");
@@ -31,3 +32,6 @@ new TestPage({target, props: {}});
 
 var target = document.querySelector("#unmatched");
 new Unmatched({target, props: {}});
+
+var target = document.querySelector("#dict");
+new Dict({target, props: {}});

@@ -1,7 +1,7 @@
 <script>
     import * as _ from 'lodash';
     import { onMount } from 'svelte';
-import Lang from './Lang.svelte';
+    import Lang from './Lang.svelte';
     
     
     let langList = [];
@@ -30,4 +30,6 @@ import Lang from './Lang.svelte';
         {:else}
             <p>Loading...</p>
         {/if}
+            <br>
+        <a href="/dict">Dictionary</a>
     </div>

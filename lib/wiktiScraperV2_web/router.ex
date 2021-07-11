@@ -20,6 +20,7 @@ defmodule WiktiScraperV2Web.Router do
     get "/lang/:lang", PageController, :lang
     get "/testPage/:lang/:word/:wordClass", PageController, :testpage
     get "/unmatched/:lang/:wordClass", PageController, :unmatched
+    get "/dict", PageController, :dict
   end
 
   scope "/api", WiktiScraperV2Web do
@@ -34,6 +35,7 @@ defmodule WiktiScraperV2Web.Router do
     post "/initUnmatched/:lang/:wordClass", ApiController, :initUnmatched
     get "/unmatched/:lang/:wordClass", ApiController, :getUnmatched
     get "/buildWords/:lang/:wordClass", ApiController, :buildWords
+    get "/getDef/:lang/:word", ApiController, :getDef
   end
 
   # Other scopes may use custom stacks.

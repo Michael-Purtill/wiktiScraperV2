@@ -16,4 +16,8 @@ defmodule WiktiScraperV2Web.PageController do
   def unmatched(conn, _params) do
     render(conn, "unmatched.html")
   end
+
+  def dict(conn, _params) do
+    render(conn, "dict.html")
+  end
 end
