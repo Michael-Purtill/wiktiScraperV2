@@ -228,3 +228,12 @@ a.wikiLink {
   cursor: pointer;
 }
 
+.termSpan {
+  padding-right: 0.5em;
+  cursor: pointer;
+}
+
+.highlighted {
+  text-decoration: underline;
+}
+

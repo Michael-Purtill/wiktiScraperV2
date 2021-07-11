@@ -673,4 +673,12 @@ defmodule WiktiScraperV2Web.ApiController do
     json(conn, dbMatches)
   end
 
+  def getAllUnmatched(conn,  %{"lang" => lang, "word" => word}) do
+    link = "https://en.wiktionary.org/wiki/" <> URI.encode(word)
+    IO.puts link
+    IO.puts word
+    dbMatches = Repo.all(from u in UnmatchedWord, where: u.lang == ^lang and u.link == ^link, select: [u.link, u.pos])
+    json(conn, dbMatches)
+  end
+
 end
