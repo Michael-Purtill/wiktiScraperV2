@@ -231,9 +231,41 @@ a.wikiLink {
 .termSpan {
   padding-right: 0.5em;
   cursor: pointer;
+  font-size: 1.5em;
 }
 
 .highlighted {
   text-decoration: underline;
+}
+
+#dictSearch {
+  width: 75%;
+  height: fit-content;
+  border-radius: 0.2em;
+  border-color: black;
+  font-size: x-large;
+}
+
+#dictSearch:focus-visible {
+  width: 75%;
+  height: fit-content;
+  border-radius: 0.2em;
+  border-color: black;
+  font-size: x-large;
+}
+
+.defList {
+  list-style: none;
+  text-align: left;
+  
+}
+
+.defList > li {
+  margin-bottom: 1em;
+  background: #e0e1ff;
+}
+
+.fields > input {
+  width: 80%;
 }
 

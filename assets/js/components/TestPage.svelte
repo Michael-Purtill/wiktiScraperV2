@@ -108,7 +108,7 @@
                         {#each content.innerContent as innerContent, k}
                             <tr>
                                 {#each innerContent as inner, l}
-                                    <td class={_.includes(selectors, `${i}:${j}:${k}:${l}`) ? "selected" : null} rowspan={inner.rowspan} colspan={inner.colspan} id={`${i}:${j}:${k}:${l}`} on:click={handleClick}>{inner.text.replaceAll("\n", "").replaceAll("  ", " ").replaceAll(" ,", ",").replaceAll(" .", ".")}</td>
+                                    <td class={_.includes(selectors, `${i}:${j}:${k}:${l}`) ? "selected" : null} rowspan={inner.rowspan} colspan={inner.colspan} id={`${i}:${j}:${k}:${l}`} on:click={handleClick}>{inner.text ? inner.text.replaceAll("\n", "").replaceAll("  ", " ").replaceAll(" ,", ",").replaceAll(" .", ".") : ""}</td>
                                 {/each}
                             </tr>
                         {/each}
@@ -142,7 +142,7 @@
         {#each selectors as s}
             <div class="fields">
                 <h4>{document.getElementById(s).innerText}</h4>
-                <input id={"field" + s} on:keypress={handleKeyPress} on:keyup={(e) => handleFieldChange(s, e)} type="text" placeholder="Field Name" value={document.getElementById(s).id.split(":").length == 4 ? document.getElementById(s).parentElement.children[0].innerText + "_" + document.getElementById(s).parentElement.parentElement.children[0].children[document.getElementById(s).id.split(":")[3]].innerText : ""} />
+                <input id={"field" + s} on:keypress={handleKeyPress} on:keyup={(e) => handleFieldChange(s, e)} type="text" placeholder="Field Name" />
             </div>
         
         {/each}

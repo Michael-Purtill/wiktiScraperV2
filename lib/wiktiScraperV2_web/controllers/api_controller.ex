@@ -126,8 +126,10 @@ defmodule WiktiScraperV2Web.ApiController do
 
         {:ok, %HTTPoison.Response{status_code: 404}} ->
           IO.puts "Error trying to fetch page html"
+          page2Section(pageLink, lang)
         {:error, %HTTPoison.Error{reason: _reason}} ->
           IO.puts "Error trying to fetch page html"
+          page2Section(pageLink, lang)
     end
     #return
     page
@@ -455,8 +457,81 @@ defmodule WiktiScraperV2Web.ApiController do
     section = page2Section(wikiLink, lang)
     content = scrubHtml(section)
     cappedClass = String.capitalize(wordClass)
-    Repo.insert(%Template{selectors: selectors, lang: lang, html: content, wordclass: cappedClass})
     Repo.update_all(from(u in UnmatchedWord, where: u.html == ^content and u.lang == ^lang and u.pos == ^cappedClass), set: [matched: true])
+    case Repo.insert(%Template{selectors: selectors, lang: lang, html: content, wordclass: cappedClass}) do
+      {:ok, template} ->
+        html = Map.get(template, :html)
+        selectors = Map.get(template, :selectors)
+        unmatched = Repo.all(from u in UnmatchedWord, where: u.lang == ^lang and u.pos == ^wordClass and u.matched == true and u.html == ^html, select: u.link)
+
+        Enum.each(unmatched, fn u ->
+          section = page2Section(u, lang)
+          wordData = section2Content(section)
+          wordString = Enum.at(String.split(u, "/"), 4)
+          wordString = URI.decode(wordString)
+          dataObject = Enum.map(selectors, fn s ->
+            # IO.puts String.split(Map.get(s, "id"), ":")
+            selectedContent = case length(String.split(Map.get(s, "id"), ":")) do
+              2 -> selectKeys = String.split(Map.get(s, "id"), ":")
+              {index1, _} = Integer.parse(Enum.at(selectKeys, 0))
+              {index2, _} = Integer.parse(Enum.at(selectKeys, 1))
+
+              obj = Enum.at(wordData, index1)
+              case obj do
+                nil -> %{}
+                _ ->
+                  content = Map.get(obj, :content)
+                  content = Enum.at(content, index2)
+                  %{Map.get(s, "val") => content}
+              end
+
+
+              4 -> selectKeys = String.split(Map.get(s, "id"), ":")
+              {index1, _} = Integer.parse(Enum.at(selectKeys, 0))
+              {index2, _} = Integer.parse(Enum.at(selectKeys, 1))
+              {index3, _} = Integer.parse(Enum.at(selectKeys, 2))
+              {index4, _} = Integer.parse(Enum.at(selectKeys, 3))
+
+              obj = Enum.at(wordData, index1)
+              content = Map.get(obj, :content)
+              content = Enum.at(content, index2)
+              content = Map.get(content, :innerContent)
+              content = Enum.at(Enum.at(content, index3), index4)
+              %{Map.get(s, "val") => content}
+
+
+              5 -> selectKeys = String.split(Map.get(s, "id"), ":")
+              {index1, _} = Integer.parse(Enum.at(selectKeys, 0))
+              {index2, _} = Integer.parse(Enum.at(selectKeys, 1))
+              {index3, _} = Integer.parse(Enum.at(selectKeys, 2))
+              {index4, _} = Integer.parse(Enum.at(selectKeys, 3))
+              {index5, _} = Integer.parse(Enum.at(selectKeys, 4))
+
+              obj = Enum.at(wordData, index1)
+              content = Map.get(obj, :content)
+              content = Enum.at(content, index2)
+              content = Map.get(content, :innerContent)
+              content = Enum.at(content, index3)
+              content = Enum.at(content, index4)
+              content = Enum.at(content, index5)
+              %{Map.get(s, "val") => content}
+              end
+
+              selectedContent
+          end)
+          accMap = %{}
+          dataObject = Enum.reduce(dataObject, accMap, fn (map, acc) -> Map.merge(map, acc) end)
+          dbMatches = Repo.all(from w in Word, where: w.word == ^wordString and w.lang == ^lang and w.wordClass == ^wordClass)
+
+          case length(dbMatches) do
+            0 -> Repo.insert(%Word{data: dataObject, lang: lang, wordClass: wordClass, word: wordString})
+            _ -> IO.puts "matches found"
+          end
+
+          # IO.puts dataObject
+        end)
+      _ -> IO.puts "error inserting template"
+    end
     json(conn, selectors)
   end
 
@@ -615,9 +690,14 @@ defmodule WiktiScraperV2Web.ApiController do
             {index2, _} = Integer.parse(Enum.at(selectKeys, 1))
 
             obj = Enum.at(wordData, index1)
-            content = Map.get(obj, :content)
-            content = Enum.at(content, index2)
-            %{Map.get(s, "val") => content}
+            case obj do
+              nil -> %{}
+              _ ->
+                content = Map.get(obj, :content)
+                content = Enum.at(content, index2)
+                %{Map.get(s, "val") => content}
+            end
+
 
             4 -> selectKeys = String.split(Map.get(s, "id"), ":")
             {index1, _} = Integer.parse(Enum.at(selectKeys, 0))
@@ -664,11 +744,12 @@ defmodule WiktiScraperV2Web.ApiController do
         # IO.puts dataObject
       end)
     end)
-
+    IO.puts "finished buildings words"
   end
 
   def getDef(conn, %{"lang" => lang, "word" => word}) do
-    dbMatches = Repo.all(from u in Word, where: u.lang == ^lang and u.word == ^word, select: u.data)
+
+    dbMatches = Repo.all(from u in Word, where: u.lang == ^lang and ilike(u.word, ^word), select: [u.data, u.wordClass])
 
     json(conn, dbMatches)
   end
@@ -677,7 +758,11 @@ defmodule WiktiScraperV2Web.ApiController do
     link = "https://en.wiktionary.org/wiki/" <> URI.encode(word)
     IO.puts link
     IO.puts word
-    dbMatches = Repo.all(from u in UnmatchedWord, where: u.lang == ^lang and u.link == ^link, select: [u.link, u.pos])
+    likeLink = "%#{link}%"
+    dbMatches = Repo.all(from u in UnmatchedWord, where: u.lang == ^lang and ilike(u.link, ^likeLink) and u.matched == false, select: [u.link, u.pos])
+
+    IO.puts length(dbMatches)
+
     json(conn, dbMatches)
   end
 
