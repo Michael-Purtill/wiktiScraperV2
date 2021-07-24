@@ -85,9 +85,13 @@
 
                 {/each}
                 </ul>
-            {:else if d[0] && d[0][key]}
+            {:else if d[0] && d[0][key] && d[0][key].innerContent}
             <ul class="defList">
                 <li>{d[0][key].innerContent}</li>
+            </ul>
+            {:else if d[0] && d[0][key] && d[0][key].text}
+            <ul class="defList">
+                <li>{d[0][key].text}</li>
             </ul>
             {/if}
 

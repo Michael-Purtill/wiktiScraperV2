@@ -751,6 +751,12 @@ defmodule WiktiScraperV2Web.ApiController do
 
     dbMatches = Repo.all(from u in Word, where: u.lang == ^lang and ilike(u.word, ^word), select: [u.data, u.wordClass])
 
+    word = "%" <> word <> "%"
+
+    dbMatchesMap = Repo.all(from u in Word, where: ilike(fragment("cast(? as text)", u.data), ^word), select: [u.data, u.wordClass])
+
+    dbMatches = dbMatches ++ dbMatchesMap
+
     json(conn, dbMatches)
   end
 
