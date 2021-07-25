@@ -86,10 +86,36 @@
         }
     }
 
+    function fetchTableTemplates() {
+        fetch(`/api/findTableTemplate/${lang}/${word}/${wordClass}`).then((r) => {return r.json()}).then((d) => {
+            let tableId = document.getElementsByTagName("table")[0].children[0].children[0].children[0].id.split(":")[0];
+            let tableSelectors = _.filter(d[0], function(datum) {return datum.id.split(":").length == 4});
+
+            let newSelectors = _.map(tableSelectors, (t) => {
+                let selectorArr = t.id.split(":");
+                selectorArr[0] = tableId;
+                return selectorArr.join(":");
+            });
+
+            let newFields = _.map(tableSelectors, (t) => {
+                let selectorArr = t.id.split(":");
+                selectorArr[0] = tableId;
+                return {id: selectorArr.join(":"), val: t.val};
+            });
+
+            // debugger;
+
+            selectors = selectors.concat(newSelectors);
+            fields = fields.concat(newFields);
+            
+        });
+    }
+
 </script>
 
 <div>
     <a class="wikiLink" href={wikiLink} target="_blank">View on Wiktionary</a>
+    <button on:click={fetchTableTemplates}>table template</button>
     {#each langInfo as datum, i}
         <div class="langInfoContainer">
             <h3>{datum.title.replaceAll("[ edit ]", "").replaceAll("[edit]", "").replaceAll("  ", " ").replaceAll(" ,", ",").replaceAll(" .", ".")}</h3>
@@ -139,10 +165,10 @@
             <h3>Word Class</h3>
             <input on:change={handleClassChange} type="text" value={wordClass}/>
         </div>
-        {#each selectors as s}
+        {#each selectors as s, i}
             <div class="fields">
                 <h4>{document.getElementById(s).innerText}</h4>
-                <input id={"field" + s} on:keypress={handleKeyPress} on:keyup={(e) => handleFieldChange(s, e)} type="text" placeholder="Field Name" />
+                <input value={fields[i] ? fields[i].val : ""} id={"field" + s} on:keypress={handleKeyPress} on:keyup={(e) => handleFieldChange(s, e)} type="text" placeholder="Field Name" />
             </div>
         
         {/each}

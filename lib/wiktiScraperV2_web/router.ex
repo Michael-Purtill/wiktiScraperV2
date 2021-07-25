@@ -37,6 +37,7 @@ defmodule WiktiScraperV2Web.Router do
     get "/buildWords/:lang/:wordClass", ApiController, :buildWords
     get "/getDef/:lang/:word", ApiController, :getDef
     get "/getAllUnmatched/:lang/:word", ApiController, :getAllUnmatched
+    get "/findTableTemplate/:lang/:word/:wordClass", ApiController, :findTableTemplate
   end
 
   # Other scopes may use custom stacks.

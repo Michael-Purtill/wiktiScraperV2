@@ -751,7 +751,7 @@ defmodule WiktiScraperV2Web.ApiController do
 
     dbMatches = Repo.all(from u in Word, where: u.lang == ^lang and ilike(u.word, ^word), select: [u.data, u.wordClass])
 
-    word = "%" <> word <> "%"
+    word = "%\"" <> word <> "%"
 
     dbMatchesMap = Repo.all(from u in Word, where: ilike(fragment("cast(? as text)", u.data), ^word), select: [u.data, u.wordClass])
 
@@ -768,6 +768,31 @@ defmodule WiktiScraperV2Web.ApiController do
     dbMatches = Repo.all(from u in UnmatchedWord, where: u.lang == ^lang and ilike(u.link, ^likeLink) and u.matched == false, select: [u.link, u.pos])
 
     IO.puts length(dbMatches)
+
+    json(conn, dbMatches)
+  end
+
+  def findTableTemplate(conn, %{"lang" => lang, "word" => word, "wordClass" => wordClass}) do
+
+    htmlString = page2Section("https://en.wiktionary.org/wiki/" <> URI.decode(word), lang)
+
+    htmlString = scrubHtml(htmlString)
+
+    htmlString = String.replace(htmlString, "\n", "")
+
+    strs = Regex.scan(~r/<table.*<\/table>/, htmlString)
+
+    tableString = Enum.at(Enum.at(strs, 0), 0)
+    tableString = "%" <> tableString <> "%"
+
+    dbMatches = case length(strs) do
+      1 ->
+        IO.puts "hello?"
+        tableString = Enum.at(Enum.at(strs, 0), 0)
+        tableString = "%" <> tableString <> "%"
+        Repo.all(from u in Template, where: ilike(fragment("replace(?,E'\\n','')", u.html), ^tableString) and ilike(u.wordclass, ^wordClass) , select: u.selectors)
+      _ -> []
+    end
 
     json(conn, dbMatches)
   end
