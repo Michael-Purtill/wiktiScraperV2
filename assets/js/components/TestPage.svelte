@@ -89,17 +89,23 @@
     function fetchTableTemplates() {
         fetch(`/api/findTableTemplate/${lang}/${word}/${wordClass}`).then((r) => {return r.json()}).then((d) => {
             let tableId = document.getElementsByTagName("table")[0].children[0].children[0].children[0].id.split(":")[0];
+            let tableStartId = document.getElementsByTagName("table")[0].children[0].children[0].children[0].id.split(":")[1];
             let tableSelectors = _.filter(d[0], function(datum) {return datum.id.split(":").length == 4});
 
             let newSelectors = _.map(tableSelectors, (t) => {
                 let selectorArr = t.id.split(":");
                 selectorArr[0] = tableId;
+
+                selectorArr[1] = parseInt(selectorArr[1]) + parseInt(tableStartId);
+                
+
                 return selectorArr.join(":");
             });
 
             let newFields = _.map(tableSelectors, (t) => {
                 let selectorArr = t.id.split(":");
                 selectorArr[0] = tableId;
+                selectorArr[1] = parseInt(selectorArr[1]) + parseInt(tableStartId);
                 return {id: selectorArr.join(":"), val: t.val};
             });
 
